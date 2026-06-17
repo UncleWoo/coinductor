@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+/staticfiles/
+/mediafiles/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 10xDevs CLI artifacts (agent skills)
+.github/skills/
+.github/prompts/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Session artifacts (not committed)
+.copilot/
+
+# Archives and notes (personal)
+*.zip
+idea-notes.md
+pomysl.md
+10xdevs3-artifacts-m1.zip
+
+# Environment variables
+.env
+.env.local
