@@ -83,9 +83,9 @@ if 'DATABASE_URL' in os.environ:
             conn_health_checks=True,
         )
     }
-    # Railway PostgreSQL requires SSL
+    # Railway PostgreSQL SSL configuration
     DATABASES['default']['OPTIONS'] = {
-        'sslmode': 'require',
+        'sslmode': 'disable',
     }
 else:
     DATABASES = {
