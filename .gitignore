@@ -50,3 +50,5 @@ pomysl.md
 # Environment variables
 .env
 .env.local
+.github/copilot-instructions.md
+.github/.10x-cli-manifest.json
