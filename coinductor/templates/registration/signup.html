@@ -1,24 +1,72 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Sign Up</h1>
-  <form method="post">
-    {% csrf_token %}
-    <p>
-      <label for="{{ form.username.id_for_label }}">Email:</label>
-      {{ form.username }}
-      {{ form.username.errors }}
+  <section class="mx-auto max-w-md rounded-xl bg-white p-6 shadow">
+    <h1 class="text-2xl font-bold text-slate-900">Create account</h1>
+    <p class="mt-2 text-sm text-slate-600">Track your budget with daily spending limits.</p>
+
+    <form method="post" class="mt-6 space-y-4">
+      {% csrf_token %}
+      <div>
+        <label for="id_username" class="mb-1 block text-sm font-medium text-slate-700">Email</label>
+        <input
+          id="id_username"
+          name="username"
+          type="email"
+          value="{{ form.username.value|default_if_none:'' }}"
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none ring-blue-500 focus:ring-2"
+          required
+        >
+        {% if form.username.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="id_password1" class="mb-1 block text-sm font-medium text-slate-700">Password</label>
+        <input
+          id="id_password1"
+          name="password1"
+          type="password"
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none ring-blue-500 focus:ring-2"
+          required
+        >
+        {% if form.password1.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <label for="id_password2" class="mb-1 block text-sm font-medium text-slate-700">Confirm password</label>
+        <input
+          id="id_password2"
+          name="password2"
+          type="password"
+          class="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none ring-blue-500 focus:ring-2"
+          required
+        >
+        {% if form.password2.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {{ form.non_field_errors.0 }}
+        </div>
+      {% endif %}
+
+      <button
+        type="submit"
+        class="w-full rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+      >
+        Sign Up
+      </button>
+    </form>
+
+    <p class="mt-4 text-sm text-slate-600">
+      Already have account?
+      <a href="{% url 'login' %}" class="font-medium text-blue-600 hover:text-blue-700">Log in</a>
     </p>
-    <p>
-      <label for="{{ form.password1.id_for_label }}">Password:</label>
-      {{ form.password1 }}
-      {{ form.password1.errors }}
-    </p>
-    <p>
-      <label for="{{ form.password2.id_for_label }}">Confirm Password:</label>
-      {{ form.password2 }}
-      {{ form.password2.errors }}
-    </p>
-    <button type="submit">Sign Up</button>
-  </form>
+  </section>
 {% endblock %}

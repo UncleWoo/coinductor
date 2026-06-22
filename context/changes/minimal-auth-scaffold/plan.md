@@ -536,33 +536,33 @@ If switching to custom User model post-MVP, that's a separate change requiring d
 
 #### Automated
 
-- [x] 2.1 URL routing works: `python manage.py show_urls` (or manual curl tests)
-- [x] 2.2 No import errors: `python manage.py check` passes
-- [x] 2.3 Migrations up to date: `python manage.py migrate` reports no pending migrations
+- [x] 2.1 URL routing works: `python manage.py show_urls` (or manual curl tests) — 89b3fba
+- [x] 2.2 No import errors: `python manage.py check` passes — 89b3fba
+- [x] 2.3 Migrations up to date: `python manage.py migrate` reports no pending migrations — 89b3fba
 
 #### Manual
 
-- [x] 2.4 Visit `/signup/` — renders signup form
-- [x] 2.5 Visit `/login/` — renders login form
-- [x] 2.6 Visit `/logout/` — renders logout confirmation
+- [x] 2.4 Visit `/signup/` — renders signup form — 89b3fba
+- [x] 2.5 Visit `/login/` — renders login form — 89b3fba
+- [x] 2.6 Visit `/logout/` — renders logout confirmation — 89b3fba
 
 ### Phase 3: Authentication Templates
 
 #### Automated
 
-- [ ] 3.1 Templates load without errors: `python manage.py check --deploy` passes template validation
-- [ ] 3.2 CSS classes compile: `npm run build` includes all Tailwind classes used in templates
+- [x] 3.1 Templates load without errors: `python manage.py check --deploy` passes template validation
+- [x] 3.2 CSS classes compile: `npm run build` includes all Tailwind classes used in templates
 
 #### Manual
 
-- [ ] 3.3 Visit `/signup/` — form renders with clean Tailwind styling
-- [ ] 3.4 Submit empty form — field-level errors appear with red styling
-- [ ] 3.5 Submit mismatched passwords — error displays clearly
-- [ ] 3.6 Submit valid signup — redirects to home, user is logged in
-- [ ] 3.7 Visit `/login/` — form styled consistently with signup
-- [ ] 3.8 Submit wrong credentials — error message appears
-- [ ] 3.9 Submit correct credentials — redirects to home
-- [ ] 3.10 Click logout — confirmation page appears, session cleared
+- [x] 3.3 Visit `/signup/` — form renders with clean Tailwind styling
+- [x] 3.4 Submit empty form — field-level errors appear with red styling
+- [x] 3.5 Submit mismatched passwords — error displays clearly
+- [x] 3.6 Submit valid signup — redirects to home, user is logged in
+- [x] 3.7 Visit `/login/` — form styled consistently with signup
+- [x] 3.8 Submit wrong credentials — error message appears
+- [x] 3.9 Submit correct credentials — redirects to home
+- [x] 3.10 Click logout — confirmation page appears, session cleared
 
 ### Phase 4: Integration & Testing
 
