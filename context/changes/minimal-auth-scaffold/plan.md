@@ -550,33 +550,33 @@ If switching to custom User model post-MVP, that's a separate change requiring d
 
 #### Automated
 
-- [x] 3.1 Templates load without errors: `python manage.py check --deploy` passes template validation
-- [x] 3.2 CSS classes compile: `npm run build` includes all Tailwind classes used in templates
+- [x] 3.1 Templates load without errors: `python manage.py check --deploy` passes template validation — 7772b04
+- [x] 3.2 CSS classes compile: `npm run build` includes all Tailwind classes used in templates — 7772b04
 
 #### Manual
 
-- [x] 3.3 Visit `/signup/` — form renders with clean Tailwind styling
-- [x] 3.4 Submit empty form — field-level errors appear with red styling
-- [x] 3.5 Submit mismatched passwords — error displays clearly
-- [x] 3.6 Submit valid signup — redirects to home, user is logged in
-- [x] 3.7 Visit `/login/` — form styled consistently with signup
-- [x] 3.8 Submit wrong credentials — error message appears
-- [x] 3.9 Submit correct credentials — redirects to home
-- [x] 3.10 Click logout — confirmation page appears, session cleared
+- [x] 3.3 Visit `/signup/` — form renders with clean Tailwind styling — 7772b04
+- [x] 3.4 Submit empty form — field-level errors appear with red styling — 7772b04
+- [x] 3.5 Submit mismatched passwords — error displays clearly — 7772b04
+- [x] 3.6 Submit valid signup — redirects to home, user is logged in — 7772b04
+- [x] 3.7 Visit `/login/` — form styled consistently with signup — 7772b04
+- [x] 3.8 Submit wrong credentials — error message appears — 7772b04
+- [x] 3.9 Submit correct credentials — redirects to home — 7772b04
+- [x] 3.10 Click logout — confirmation page appears, session cleared — 7772b04
 
 ### Phase 4: Integration & Testing
 
 #### Automated
 
-- [ ] 4.1 All URLs resolve: Test GET requests to `/`, `/signup/`, `/login/`, `/logout/`
-- [ ] 4.2 Home page loads: `curl http://localhost:8000/` returns HTML with user state
-- [ ] 4.3 Linting passes: `python manage.py check --deploy` reports no issues
-- [ ] 4.4 Static files collected: `python manage.py collectstatic` completes successfully
+- [x] 4.1 All URLs resolve: Test GET requests to `/`, `/signup/`, `/login/`, `/logout/`
+- [x] 4.2 Home page loads: `curl http://localhost:8000/` returns HTML with user state
+- [x] 4.3 Linting passes: `python manage.py check --deploy` reports no issues
+- [x] 4.4 Static files collected: `python manage.py collectstatic` completes successfully
 
 #### Manual
 
-- [ ] 4.5 Complete auth flow: anonymous → signup → logout → login
-- [ ] 4.6 Error handling: duplicate signup shows error
-- [ ] 4.7 Error handling: wrong login password shows error
-- [ ] 4.8 Django admin still works: `/admin/` redirects to login
-- [ ] 4.9 Responsive design: test on mobile viewport (350px width)
+- [x] 4.5 Complete auth flow: anonymous → signup → logout → login
+- [x] 4.6 Error handling: duplicate signup shows error
+- [x] 4.7 Error handling: wrong login password shows error
+- [x] 4.8 Django admin still works: `/admin/` redirects to login
+- [x] 4.9 Responsive design: test on mobile viewport (350px width)

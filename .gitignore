@@ -36,6 +36,11 @@ Thumbs.db
 # Session artifacts (not committed)
 .copilot/
 
+# Node.js
+node_modules/
+npm-debug.log
+static/css/output.css
+
 # Archives and notes (personal)
 *.zip
 idea-notes.md
