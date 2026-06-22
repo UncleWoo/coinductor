@@ -518,33 +518,33 @@ If switching to custom User model post-MVP, that's a separate change requiring d
 
 #### Automated
 
-- [x] 1.1 Railway buildpack ready (if deploying): `railway run npm --version` succeeds
-- [x] 1.2 Tailwind installs: `npm install` completes without errors
-- [x] 1.3 CSS compiles: `npm run build` generates `static/css/output.css`
-- [x] 1.4 Static files collect: `python manage.py collectstatic --noinput` succeeds
-- [x] 1.5 Server starts: `python manage.py runserver` runs without errors
-- [x] 1.6 Base template loads: `curl http://localhost:8000/` returns HTML with Tailwind classes
+- [x] 1.1 Railway buildpack ready (if deploying): `railway run npm --version` succeeds — f79b225
+- [x] 1.2 Tailwind installs: `npm install` completes without errors — f79b225
+- [x] 1.3 CSS compiles: `npm run build` generates `static/css/output.css` — f79b225
+- [x] 1.4 Static files collect: `python manage.py collectstatic --noinput` succeeds — f79b225
+- [x] 1.5 Server starts: `python manage.py runserver` runs without errors — f79b225
+- [x] 1.6 Base template loads: `curl http://localhost:8000/` returns HTML with Tailwind classes — f79b225
 
 #### Manual
 
-- [x] 1.7 Visit home in browser — page renders with styled navigation
-- [x] 1.8 Inspect page source — link tag points to `/static/css/output.css`
-- [x] 1.9 Navigation shows placeholder links (Login | Sign Up)
-- [x] 1.10 Responsive check: resize browser window, navigation adapts
+- [x] 1.7 Visit home in browser — page renders with styled navigation — f79b225
+- [x] 1.8 Inspect page source — link tag points to `/static/css/output.css` — f79b225
+- [x] 1.9 Navigation shows placeholder links (Login | Sign Up) — f79b225
+- [x] 1.10 Responsive check: resize browser window, navigation adapts — f79b225
 
 ### Phase 2: Authentication URLs & Views
 
 #### Automated
 
-- [ ] 2.1 URL routing works: `python manage.py show_urls` (or manual curl tests)
-- [ ] 2.2 No import errors: `python manage.py check` passes
-- [ ] 2.3 Migrations up to date: `python manage.py migrate` reports no pending migrations
+- [x] 2.1 URL routing works: `python manage.py show_urls` (or manual curl tests)
+- [x] 2.2 No import errors: `python manage.py check` passes
+- [x] 2.3 Migrations up to date: `python manage.py migrate` reports no pending migrations
 
 #### Manual
 
-- [ ] 2.4 Visit `/signup/` — renders signup form
-- [ ] 2.5 Visit `/login/` — renders login form
-- [ ] 2.6 Visit `/logout/` — renders logout confirmation
+- [x] 2.4 Visit `/signup/` — renders signup form
+- [x] 2.5 Visit `/login/` — renders login form
+- [x] 2.6 Visit `/logout/` — renders logout confirmation
 
 ### Phase 3: Authentication Templates
 

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Login</h1>
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      {{ form.non_field_errors }}
+    {% endif %}
+    <p>
+      <label for="{{ form.username.id_for_label }}">Email:</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+    </p>
+    <p>
+      <label for="{{ form.password.id_for_label }}">Password:</label>
+      {{ form.password }}
+      {{ form.password.errors }}
+    </p>
+    <button type="submit">Login</button>
+  </form>
+{% endblock %}
