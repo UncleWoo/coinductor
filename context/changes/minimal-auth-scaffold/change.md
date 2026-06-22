@@ -1,7 +1,7 @@
 ---
 change_id: minimal-auth-scaffold
 title: Django built-in auth configured with signup and login
-status: implementing
+status: implemented
 created: 2026-06-19
 updated: 2026-06-22
 archived_at: null

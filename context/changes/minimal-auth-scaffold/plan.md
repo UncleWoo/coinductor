@@ -568,15 +568,15 @@ If switching to custom User model post-MVP, that's a separate change requiring d
 
 #### Automated
 
-- [x] 4.1 All URLs resolve: Test GET requests to `/`, `/signup/`, `/login/`, `/logout/`
-- [x] 4.2 Home page loads: `curl http://localhost:8000/` returns HTML with user state
-- [x] 4.3 Linting passes: `python manage.py check --deploy` reports no issues
-- [x] 4.4 Static files collected: `python manage.py collectstatic` completes successfully
+- [x] 4.1 All URLs resolve: Test GET requests to `/`, `/signup/`, `/login/`, `/logout/` — b18c8f0
+- [x] 4.2 Home page loads: `curl http://localhost:8000/` returns HTML with user state — b18c8f0
+- [x] 4.3 Linting passes: `python manage.py check --deploy` reports no issues — b18c8f0
+- [x] 4.4 Static files collected: `python manage.py collectstatic` completes successfully — b18c8f0
 
 #### Manual
 
-- [x] 4.5 Complete auth flow: anonymous → signup → logout → login
-- [x] 4.6 Error handling: duplicate signup shows error
-- [x] 4.7 Error handling: wrong login password shows error
-- [x] 4.8 Django admin still works: `/admin/` redirects to login
-- [x] 4.9 Responsive design: test on mobile viewport (350px width)
+- [x] 4.5 Complete auth flow: anonymous → signup → logout → login — b18c8f0
+- [x] 4.6 Error handling: duplicate signup shows error — b18c8f0
+- [x] 4.7 Error handling: wrong login password shows error — b18c8f0
+- [x] 4.8 Django admin still works: `/admin/` redirects to login — b18c8f0
+- [x] 4.9 Responsive design: test on mobile viewport (350px width) — b18c8f0
