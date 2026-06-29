@@ -1,8 +1,11 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.shortcuts import redirect, render
+
+from budget.services import get_dashboard_metrics
 
 
 def signup(request):
@@ -33,5 +36,15 @@ def logout_view(request):
     return render(request, "registration/logged_out.html")
 
 
+@login_required
 def home(request):
-    return render(request, "home.html")
+    dashboard = get_dashboard_metrics(request.user)
+    return render(
+        request,
+        "home.html",
+        {
+            "dashboard": dashboard,
+            "empty_state": dashboard["empty_state"],
+            "on_track": dashboard["on_track"],
+        },
+    )

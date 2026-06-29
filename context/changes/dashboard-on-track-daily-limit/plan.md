@@ -297,23 +297,23 @@ Run consolidated automated and manual checks for the full auth-to-dashboard jour
 
 #### Automated
 
-- [x] 1.1 Dashboard service tests pass for metric calculations and edge cases
-- [x] 1.2 Service output includes required keys for dashboard rendering (metrics + state flags)
+- [x] 1.1 Dashboard service tests pass for metric calculations and edge cases — 141d5ad
+- [x] 1.2 Service output includes required keys for dashboard rendering (metrics + state flags) — 141d5ad
 
 #### Manual
 
-- [x] 1.3 Manual sanity check in Django shell confirms expected outputs for one no-budget case and one overspend case
+- [x] 1.3 Manual sanity check in Django shell confirms expected outputs for one no-budget case and one overspend case — 141d5ad
 
 ### Phase 2: Auth-Protected Dashboard View Wiring
 
 #### Automated
 
-- [ ] 2.1 View integration tests pass for auth redirect and authenticated render behavior
-- [ ] 2.2 Home route remains resolved and login redirect still lands on `home`
+- [x] 2.1 View integration tests pass for auth redirect and authenticated render behavior
+- [x] 2.2 Home route remains resolved and login redirect still lands on `home`
 
 #### Manual
 
-- [ ] 2.3 Anonymous browser visit to `/` redirects to login; authenticated visit renders dashboard container
+- [x] 2.3 Anonymous browser visit to `/` redirects to login; authenticated visit renders dashboard container
 
 ### Phase 3: Dashboard Template UI + States
 
