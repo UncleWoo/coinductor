@@ -330,9 +330,9 @@ Run consolidated automated and manual checks for the full auth-to-dashboard jour
 
 #### Automated
 
-- [x] 4.1 Full Django test suite passes for affected areas
-- [x] 4.2 Project-wide regression check remains green
+- [x] 4.1 Full Django test suite passes for affected areas — bd6959b
+- [x] 4.2 Project-wide regression check remains green — bd6959b
 
 #### Manual
 
-- [x] 4.3 Full user flow validated: login -> dashboard metrics -> state changes reflected correctly after expense/budget data adjustments
+- [x] 4.3 Full user flow validated: login -> dashboard metrics -> state changes reflected correctly after expense/budget data adjustments — bd6959b
