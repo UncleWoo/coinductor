@@ -308,23 +308,23 @@ Run consolidated automated and manual checks for the full auth-to-dashboard jour
 
 #### Automated
 
-- [x] 2.1 View integration tests pass for auth redirect and authenticated render behavior
-- [x] 2.2 Home route remains resolved and login redirect still lands on `home`
+- [x] 2.1 View integration tests pass for auth redirect and authenticated render behavior — d7e6957
+- [x] 2.2 Home route remains resolved and login redirect still lands on `home` — d7e6957
 
 #### Manual
 
-- [x] 2.3 Anonymous browser visit to `/` redirects to login; authenticated visit renders dashboard container
+- [x] 2.3 Anonymous browser visit to `/` redirects to login; authenticated visit renders dashboard container — d7e6957
 
 ### Phase 3: Dashboard Template UI + States
 
 #### Automated
 
-- [ ] 3.1 Dashboard UI state tests pass for normal, no-budget, and no-expenses cases
-- [ ] 3.2 Tailwind CSS compiles successfully after template updates
+- [x] 3.1 Dashboard UI state tests pass for normal, no-budget, and no-expenses cases
+- [x] 3.2 Tailwind CSS compiles successfully after template updates
 
 #### Manual
 
-- [ ] 3.3 Logged-in dashboard visually shows selected velocity indicator and correct state styling for on-track/off-track scenarios
+- [x] 3.3 Logged-in dashboard visually shows selected velocity indicator and correct state styling for on-track/off-track scenarios
 
 ### Phase 4: S-01 End-to-End Verification (Django Stack)
 
