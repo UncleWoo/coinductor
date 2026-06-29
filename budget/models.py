@@ -1,6 +1,16 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
+DEFAULT_CATEGORIES = [
+    "Food",
+    "Transport",
+    "Entertainment",
+    "Shopping",
+    "Bills",
+    "Health",
+    "Other",
+]
+
 
 def validate_first_day_of_month(value):
     if value.day != 1:

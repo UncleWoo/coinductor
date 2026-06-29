@@ -289,10 +289,10 @@ No code changes — verification only.
 
 #### Automated
 
-- [x] 2.1 Migration file exists (budget/migrations/0001_initial.py)
-- [x] 2.2 Migrations applied (showmigrations shows [X])
-- [x] 2.3 No pending migrations (makemigrations --check exits 0)
-- [x] 2.4 Tables created in database
+- [x] 2.1 Migration file exists (budget/migrations/0001_initial.py) — 0651454
+- [x] 2.2 Migrations applied (showmigrations shows [X]) — 0651454
+- [x] 2.3 No pending migrations (makemigrations --check exits 0) — 0651454
+- [x] 2.4 Tables created in database — 0651454
 
 #### Manual
 
@@ -303,8 +303,8 @@ No code changes — verification only.
 
 #### Automated
 
-- [ ] 3.1 Signal file exists (budget/signals.py)
-- [ ] 3.2 Apps.py has ready method
+- [x] 3.1 Signal file exists (budget/signals.py)
+- [x] 3.2 Apps.py has ready method
 
 #### Manual
 
