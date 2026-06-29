@@ -283,7 +283,7 @@ No code changes — verification only.
 
 #### Manual
 
-- [ ] 1.4 Review models.py confirms field types and relationships match contract
+- [x] 1.4 Review models.py confirms field types and relationships match contract
 
 ### Phase 2: Generate and apply migrations
 
@@ -296,27 +296,27 @@ No code changes — verification only.
 
 #### Manual
 
-- [ ] 2.5 Django admin shows Category, Budget, Expense models
-- [ ] 2.6 Can create a test Category via admin
+- [x] 2.5 Django admin shows Category, Budget, Expense models
+- [x] 2.6 Can create a test Category via admin
 
 ### Phase 3: Seed default categories on user signup
 
 #### Automated
 
-- [x] 3.1 Signal file exists (budget/signals.py)
-- [x] 3.2 Apps.py has ready method
+- [x] 3.1 Signal file exists (budget/signals.py) — e667a3c
+- [x] 3.2 Apps.py has ready method — e667a3c
 
 #### Manual
 
-- [ ] 3.3 New user signup creates 7 default categories
-- [ ] 3.4 Existing users unaffected
+- [x] 3.3 New user signup creates 7 default categories
+- [x] 3.4 Existing users unaffected
 
 ### Phase 4: Final verification
 
 #### Automated
 
-- [ ] 4.1 Server starts without errors
+- [x] 4.1 Server starts without errors
 
 #### Manual
 
-- [ ] 4.2 Full end-to-end test: signup → categories → budget → expense → soft delete
+- [x] 4.2 Full end-to-end test: signup → categories → budget → expense → soft delete
