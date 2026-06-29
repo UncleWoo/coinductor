@@ -319,20 +319,20 @@ Run consolidated automated and manual checks for the full auth-to-dashboard jour
 
 #### Automated
 
-- [x] 3.1 Dashboard UI state tests pass for normal, no-budget, and no-expenses cases
-- [x] 3.2 Tailwind CSS compiles successfully after template updates
+- [x] 3.1 Dashboard UI state tests pass for normal, no-budget, and no-expenses cases — 5d9ca22
+- [x] 3.2 Tailwind CSS compiles successfully after template updates — 5d9ca22
 
 #### Manual
 
-- [x] 3.3 Logged-in dashboard visually shows selected velocity indicator and correct state styling for on-track/off-track scenarios
+- [x] 3.3 Logged-in dashboard visually shows selected velocity indicator and correct state styling for on-track/off-track scenarios — 5d9ca22
 
 ### Phase 4: S-01 End-to-End Verification (Django Stack)
 
 #### Automated
 
-- [ ] 4.1 Full Django test suite passes for affected areas
-- [ ] 4.2 Project-wide regression check remains green
+- [x] 4.1 Full Django test suite passes for affected areas
+- [x] 4.2 Project-wide regression check remains green
 
 #### Manual
 
-- [ ] 4.3 Full user flow validated: login -> dashboard metrics -> state changes reflected correctly after expense/budget data adjustments
+- [x] 4.3 Full user flow validated: login -> dashboard metrics -> state changes reflected correctly after expense/budget data adjustments
