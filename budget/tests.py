@@ -236,3 +236,31 @@ class DashboardMetricsServiceTests(TestCase):
         }
 
         self.assertSetEqual(set(metrics.keys()), expected_keys)
+
+    def test_velocity_status_uses_five_percent_tolerance_boundary(self):
+        Budget.objects.create(
+            user=self.user,
+            category=self.user_category,
+            month=date(2026, 6, 1),
+            amount=Decimal("630.00"),
+        )
+        Expense.objects.create(
+            user=self.user,
+            category=self.user_category,
+            amount=Decimal("210.00"),
+            date=date(2026, 6, 9),
+        )
+
+        at_boundary = get_dashboard_metrics(self.user, as_of=self.as_of)
+        self.assertEqual(at_boundary["velocity_status"], "on_pace")
+
+        Expense.objects.filter(user=self.user, category=self.user_category).delete()
+        Expense.objects.create(
+            user=self.user,
+            category=self.user_category,
+            amount=Decimal("210.10"),
+            date=date(2026, 6, 9),
+        )
+
+        above_boundary = get_dashboard_metrics(self.user, as_of=self.as_of)
+        self.assertEqual(above_boundary["velocity_status"], "behind")

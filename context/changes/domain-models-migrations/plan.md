@@ -76,7 +76,7 @@ Scaffold the `budget` Django app and define Category, Budget, and Expense models
 
 **Contract:**
 - `Category`: `user` (FK to User), `name` (CharField max 100), `is_deleted` (BooleanField default False), `created_at`, `updated_at`
-- `Budget`: `user` (FK), `category` (FK to Category), `month` (DateField — first day of month), `amount` (DecimalField max_digits=10, decimal_places=2), `is_deleted`, `created_at`, `updated_at`. Unique constraint on (user, category, month).
+- `Budget`: `user` (FK), `category` (FK to Category), `month` (DateField — first day of month, enforced via model validator), `amount` (DecimalField max_digits=10, decimal_places=2), `is_deleted`, `created_at`, `updated_at`. Unique constraint on (user, category, month).
 - `Expense`: `user` (FK), `category` (FK to Category), `amount` (DecimalField), `date` (DateField), `description` (CharField max 255, blank=True), `is_deleted`, `created_at`, `updated_at`
 
 #### 3. Register app in settings
@@ -92,7 +92,7 @@ Scaffold the `budget` Django app and define Category, Budget, and Expense models
 #### Automated Verification:
 
 - App structure exists: `ls budget/models.py budget/admin.py budget/apps.py`
-- Models import without error: `python -c "from budget.models import Category, Budget, Expense"`
+- Models import without error: `DJANGO_SETTINGS_MODULE=coinductor.settings python -c "import django; django.setup(); from budget.models import Category, Budget, Expense"`
 - Settings updated: `grep -q "'budget'" coinductor/settings.py`
 
 #### Manual Verification:

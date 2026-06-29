@@ -1,7 +1,7 @@
 ---
 id: dashboard-on-track-daily-limit
 title: "S-01 Implementation Compatibility Research"
-status: implemented
+status: impl_reviewed
 created: 2026-06-29
 updated: 2026-06-29
 ---

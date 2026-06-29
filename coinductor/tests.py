@@ -68,8 +68,10 @@ class HomeDashboardViewTests(TestCase):
         self.client.login(username=self.user.username, password=self.password)
         response = self.client.get(reverse("home"))
 
+        self.assertContains(response, "On track")
         self.assertContains(response, "No expenses yet for this month")
         self.assertContains(response, "Spending velocity")
+        self.assertContains(response, "w-1/3")
         self.assertEqual(response.context["empty_state"], "no_expenses")
 
     def test_dashboard_renders_metrics_state(self):
@@ -83,7 +85,7 @@ class HomeDashboardViewTests(TestCase):
         Expense.objects.create(
             user=self.user,
             category=category,
-            amount=Decimal("120.00"),
+            amount=Decimal("10000.00"),
             date=timezone.localdate(),
         )
 
@@ -93,6 +95,8 @@ class HomeDashboardViewTests(TestCase):
         self.assertContains(response, "Remaining budget")
         self.assertContains(response, "Daily limit")
         self.assertContains(response, "Spending velocity")
+        self.assertContains(response, "Off track")
+        self.assertContains(response, "w-2/3")
         self.assertIsNone(response.context["empty_state"])
 
     def test_home_route_name_and_login_redirect_remain_home(self):

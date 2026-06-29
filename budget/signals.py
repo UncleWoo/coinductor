@@ -7,7 +7,7 @@ from budget.models import Category, DEFAULT_CATEGORIES
 User = get_user_model()
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=User, dispatch_uid="budget.create_default_categories")
 def create_default_categories(sender, instance, created, **kwargs):
     if not created:
         return

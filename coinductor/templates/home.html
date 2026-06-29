@@ -22,9 +22,14 @@
         <p class="mt-2 text-sm text-slate-700">
           Add a monthly budget to unlock your daily spending limit and on-track guidance.
         </p>
-        <a href="{% url 'admin:index' %}" class="mt-4 inline-block rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
+        <a href="{% url 'home' %}?setup-budget=1" class="mt-4 inline-block rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
           Set monthly budget
         </a>
+        {% if show_budget_setup_placeholder %}
+          <p class="mt-3 rounded border border-blue-200 bg-white px-3 py-2 text-sm text-slate-700">
+            Budget setup screen arrives in S-03. This placeholder keeps you on the dashboard until that flow is available.
+          </p>
+        {% endif %}
       </section>
       <section class="rounded-lg bg-white p-6 shadow">
         <h2 class="text-lg font-semibold text-slate-900">Spending velocity</h2>

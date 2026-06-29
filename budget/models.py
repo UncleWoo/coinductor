@@ -36,6 +36,12 @@ class Category(OwnedSoftDeleteModel):
 
     class Meta:
         ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "name"],
+                name="category_unique_user_name",
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -59,6 +65,13 @@ class Budget(OwnedSoftDeleteModel):
         ]
         ordering = ["-month", "category__name"]
 
+    def clean(self):
+        super().clean()
+        if self.category_id and self.user_id and self.category.user_id != self.user_id:
+            raise ValidationError(
+                {"category": "Category must belong to the same user as the budget."}
+            )
+
     def __str__(self):
         return f"{self.category} - {self.month:%Y-%m}"
 
@@ -75,6 +88,13 @@ class Expense(OwnedSoftDeleteModel):
 
     class Meta:
         ordering = ["-date", "-created_at"]
+
+    def clean(self):
+        super().clean()
+        if self.category_id and self.user_id and self.category.user_id != self.user_id:
+            raise ValidationError(
+                {"category": "Category must belong to the same user as the expense."}
+            )
 
     def __str__(self):
         return f"{self.category} - {self.amount} on {self.date}"

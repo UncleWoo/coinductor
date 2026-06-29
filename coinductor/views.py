@@ -39,6 +39,7 @@ def logout_view(request):
 @login_required
 def home(request):
     dashboard = get_dashboard_metrics(request.user)
+    show_budget_setup_placeholder = request.GET.get("setup-budget") == "1"
     return render(
         request,
         "home.html",
@@ -46,5 +47,6 @@ def home(request):
             "dashboard": dashboard,
             "empty_state": dashboard["empty_state"],
             "on_track": dashboard["on_track"],
+            "show_budget_setup_placeholder": show_budget_setup_placeholder,
         },
     )
