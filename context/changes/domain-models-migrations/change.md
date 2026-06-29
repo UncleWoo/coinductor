@@ -1,7 +1,7 @@
 ---
 change_id: domain-models-migrations
 title: Domain models and migrations for Budget and Expense
-status: planned
+status: implementing
 created: 2026-06-29
 updated: 2026-06-29
 archived_at: null

@@ -277,9 +277,9 @@ No code changes — verification only.
 
 #### Automated
 
-- [ ] 1.1 App structure exists (budget/models.py, budget/admin.py, budget/apps.py)
-- [ ] 1.2 Models import without error
-- [ ] 1.3 Settings updated with 'budget' in INSTALLED_APPS
+- [x] 1.1 App structure exists (budget/models.py, budget/admin.py, budget/apps.py)
+- [x] 1.2 Models import without error
+- [x] 1.3 Settings updated with 'budget' in INSTALLED_APPS
 
 #### Manual
 
