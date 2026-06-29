@@ -277,9 +277,9 @@ No code changes — verification only.
 
 #### Automated
 
-- [x] 1.1 App structure exists (budget/models.py, budget/admin.py, budget/apps.py)
-- [x] 1.2 Models import without error
-- [x] 1.3 Settings updated with 'budget' in INSTALLED_APPS
+- [x] 1.1 App structure exists (budget/models.py, budget/admin.py, budget/apps.py) — b27772d
+- [x] 1.2 Models import without error — b27772d
+- [x] 1.3 Settings updated with 'budget' in INSTALLED_APPS — b27772d
 
 #### Manual
 
@@ -289,10 +289,10 @@ No code changes — verification only.
 
 #### Automated
 
-- [ ] 2.1 Migration file exists (budget/migrations/0001_initial.py)
-- [ ] 2.2 Migrations applied (showmigrations shows [X])
-- [ ] 2.3 No pending migrations (makemigrations --check exits 0)
-- [ ] 2.4 Tables created in database
+- [x] 2.1 Migration file exists (budget/migrations/0001_initial.py)
+- [x] 2.2 Migrations applied (showmigrations shows [X])
+- [x] 2.3 No pending migrations (makemigrations --check exits 0)
+- [x] 2.4 Tables created in database
 
 #### Manual
 
