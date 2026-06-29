@@ -31,3 +31,7 @@ def logout_view(request):
         return redirect("login")
 
     return render(request, "registration/logged_out.html")
+
+
+def home(request):
+    return render(request, "home.html")
