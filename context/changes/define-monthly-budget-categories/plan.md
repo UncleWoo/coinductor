@@ -296,11 +296,11 @@ Run consolidated verification to ensure S-03 works reliably and does not regress
 
 #### Automated
 
-- [x] 4.1 Targeted suites pass for budget + dashboard features
-- [x] 4.2 Full project test suite passes
-- [x] 4.3 CSS pipeline passes
+- [x] 4.1 Targeted suites pass for budget + dashboard features — 253a21a
+- [x] 4.2 Full project test suite passes — 253a21a
+- [x] 4.3 CSS pipeline passes — 253a21a
 
 #### Manual
 
-- [x] 4.4 End-to-end setup flow exits no-budget state with at least one positive category budget
-- [x] 4.5 Editing current-month budgets updates dashboard without constraint errors
+- [x] 4.4 End-to-end setup flow exits no-budget state with at least one positive category budget — 253a21a
+- [x] 4.5 Editing current-month budgets updates dashboard without constraint errors — 253a21a
