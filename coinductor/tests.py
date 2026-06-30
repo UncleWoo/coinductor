@@ -52,8 +52,8 @@ class HomeDashboardViewTests(TestCase):
         self.client.login(username=self.user.username, password=self.password)
         response = self.client.get(reverse("home"))
 
-        self.assertContains(response, "No budget set for this month")
-        self.assertContains(response, "Set monthly budget")
+        self.assertContains(response, "Set up your monthly budget")
+        self.assertContains(response, "Save budget")
         self.assertEqual(response.context["empty_state"], "no_budget")
 
     def test_dashboard_renders_no_expenses_guidance(self):
@@ -214,3 +214,45 @@ class HomeDashboardViewTests(TestCase):
 
         response = self.client.post(reverse("home"), data, follow=True)
         self.assertEqual(response.context["empty_state"], "no_expenses")
+
+    def test_no_budget_state_renders_budget_setup_form(self):
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.get(reverse("home"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Set up your monthly budget")
+        self.assertContains(response, "budget-setup")
+        self.assertIn("budget_form", response.context)
+
+    def test_budget_form_includes_all_user_categories(self):
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.get(reverse("home"))
+
+        form = response.context["budget_form"]
+        self.assertEqual(len(form.fields), 7)  # 7 default categories
+
+    def test_metrics_state_does_not_render_setup_form(self):
+        category = Category.objects.get(user=self.user, name="Food")
+        Budget.objects.create(
+            user=self.user,
+            category=category,
+            month=timezone.localdate().replace(day=1),
+            amount=Decimal("500.00"),
+        )
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.get(reverse("home"))
+
+        self.assertNotContains(response, "Set up your monthly budget")
+        self.assertNotIn("budget_form", response.context)
+
+    def test_budget_form_error_display_inline(self):
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+        data = {"action": "budget-setup"}
+        for cat in categories:
+            data[f"category_{cat.id}"] = "0.00"
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.post(reverse("home"), data)
+
+        self.assertContains(response, "At least one category")

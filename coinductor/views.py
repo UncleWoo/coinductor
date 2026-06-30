@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.shortcuts import redirect, render
 
+from budget.forms import BudgetSetupForm
 from budget.services import get_dashboard_metrics
 
 
@@ -42,7 +43,6 @@ def home(request):
         action = request.POST.get("action", "")
         
         if action == "budget-setup":
-            from budget.forms import BudgetSetupForm
             form = BudgetSetupForm(user=request.user, data=request.POST)
             
             if form.is_valid():
@@ -69,13 +69,20 @@ def home(request):
     # GET request
     dashboard = get_dashboard_metrics(request.user)
     show_budget_setup_placeholder = request.GET.get("setup-budget") == "1"
+    
+    context = {
+        "dashboard": dashboard,
+        "empty_state": dashboard["empty_state"],
+        "on_track": dashboard["on_track"],
+        "show_budget_setup_placeholder": show_budget_setup_placeholder,
+    }
+    
+    # Pass budget form on no_budget state
+    if dashboard["empty_state"] == "no_budget":
+        context["budget_form"] = BudgetSetupForm(user=request.user)
+    
     return render(
         request,
         "home.html",
-        {
-            "dashboard": dashboard,
-            "empty_state": dashboard["empty_state"],
-            "on_track": dashboard["on_track"],
-            "show_budget_setup_placeholder": show_budget_setup_placeholder,
-        },
+        context,
     )
