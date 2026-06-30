@@ -272,13 +272,13 @@ Run consolidated verification to ensure S-03 works reliably and does not regress
 
 #### Automated
 
-- [x] 2.1 Home integration tests pass for budget POST success/error branches
-- [x] 2.2 Combined impacted suites pass
+- [x] 2.1 Home integration tests pass for budget POST success/error branches — fc249fc
+- [x] 2.2 Combined impacted suites pass — fc249fc
 
 #### Manual
 
-- [x] 2.3 Valid no-budget submit redirects and clears no-budget state
-- [x] 2.4 Invalid submit shows inline errors with preserved inputs
+- [x] 2.3 Valid no-budget submit redirects and clears no-budget state — fc249fc
+- [x] 2.4 Invalid submit shows inline errors with preserved inputs — fc249fc
 
 ### Phase 3: Dashboard Budget Setup UI Integration
 
