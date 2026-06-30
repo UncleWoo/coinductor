@@ -264,3 +264,165 @@ class DashboardMetricsServiceTests(TestCase):
 
         above_boundary = get_dashboard_metrics(self.user, as_of=self.as_of)
         self.assertEqual(above_boundary["velocity_status"], "behind")
+
+
+class BudgetSetupFormTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="setup@example.com", password="Pass12345!"
+        )
+        # Create default categories for user
+        Category.objects.filter(user=self.user).delete()
+        for cat_name in DEFAULT_CATEGORIES:
+            Category.objects.create(user=self.user, name=cat_name)
+
+    def test_form_accepts_positive_amounts(self):
+        from budget.forms import BudgetSetupForm
+
+        categories = Category.objects.filter(user=self.user)
+        data = {}
+        for category in categories:
+            data[f"category_{category.id}"] = "50.00"
+
+        form = BudgetSetupForm(user=self.user, data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_rejects_all_zero_amounts(self):
+        from budget.forms import BudgetSetupForm
+
+        categories = Category.objects.filter(user=self.user)
+        data = {}
+        for category in categories:
+            data[f"category_{category.id}"] = "0.00"
+
+        form = BudgetSetupForm(user=self.user, data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("At least one category", str(form.errors))
+
+    def test_form_accepts_mixed_zero_and_positive(self):
+        from budget.forms import BudgetSetupForm
+
+        categories = list(Category.objects.filter(user=self.user))
+        data = {}
+        for i, category in enumerate(categories):
+            if i == 0:
+                data[f"category_{category.id}"] = "100.00"
+            else:
+                data[f"category_{category.id}"] = "0.00"
+
+        form = BudgetSetupForm(user=self.user, data=data)
+        self.assertTrue(form.is_valid())
+
+    def test_form_rejects_negative_amounts(self):
+        from budget.forms import BudgetSetupForm
+
+        categories = Category.objects.filter(user=self.user)
+        data = {}
+        for category in categories:
+            data[f"category_{category.id}"] = "-10.00"
+
+        form = BudgetSetupForm(user=self.user, data=data)
+        self.assertFalse(form.is_valid())
+
+    def test_form_saves_budgets_as_upsert(self):
+        from budget.forms import BudgetSetupForm
+        from django.utils import timezone
+
+        month_start = timezone.localdate().replace(day=1)
+        categories = list(Category.objects.filter(user=self.user))
+
+        # Create initial budget
+        if len(categories) > 0:
+            initial_cat = categories[0]
+            Budget.objects.create(
+                user=self.user, category=initial_cat, month=month_start, amount=Decimal("50.00")
+            )
+
+        # Submit form with updated amounts
+        data = {}
+        for i, category in enumerate(categories):
+            data[f"category_{category.id}"] = "75.00"
+
+        form = BudgetSetupForm(user=self.user, data=data)
+        self.assertTrue(form.is_valid())
+        saved = form.save()
+
+        # Verify upsert: initial budget updated
+        self.assertEqual(len(saved), len(categories))
+        for budget in saved:
+            self.assertEqual(budget.amount, Decimal("75.00"))
+            self.assertEqual(budget.user, self.user)
+
+    def test_form_preserves_existing_amounts_on_reopen(self):
+        from budget.forms import BudgetSetupForm
+        from django.utils import timezone
+
+        month_start = timezone.localdate().replace(day=1)
+        categories = list(Category.objects.filter(user=self.user))
+
+        # Create initial budgets
+        for i, cat in enumerate(categories):
+            Budget.objects.create(
+                user=self.user, category=cat, month=month_start, amount=Decimal(f"{100 + i}.00")
+            )
+
+        # Reopen form
+        form = BudgetSetupForm(user=self.user)
+
+        # Check initial values are loaded
+        for i, cat in enumerate(categories):
+            field_name = f"category_{cat.id}"
+            self.assertEqual(form.fields[field_name].initial, Decimal(f"{100 + i}.00"))
+
+
+class CustomCategoryFormTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="custom@example.com", password="Pass12345!"
+        )
+        self.other_user = User.objects.create_user(
+            username="other_custom@example.com", password="Pass12345!"
+        )
+
+    def test_form_creates_new_custom_category(self):
+        from budget.forms import CustomCategoryForm
+
+        form = CustomCategoryForm(user=self.user, data={"name": "Custom Food"})
+        self.assertTrue(form.is_valid())
+        category = form.save()
+        self.assertEqual(category.name, "Custom Food")
+        self.assertEqual(category.user, self.user)
+
+    def test_form_rejects_duplicate_user_category_name(self):
+        from budget.forms import CustomCategoryForm
+
+        Category.objects.create(user=self.user, name="Groceries")
+
+        form = CustomCategoryForm(user=self.user, data={"name": "Groceries"})
+        self.assertFalse(form.is_valid())
+        self.assertIn("You already have a category named", str(form.errors))
+
+    def test_form_allows_same_name_for_different_user(self):
+        from budget.forms import CustomCategoryForm
+
+        Category.objects.create(user=self.user, name="Groceries")
+
+        form = CustomCategoryForm(user=self.other_user, data={"name": "Groceries"})
+        self.assertTrue(form.is_valid())
+        category = form.save()
+        self.assertEqual(category.user, self.other_user)
+
+    def test_form_rejects_empty_name(self):
+        from budget.forms import CustomCategoryForm
+
+        form = CustomCategoryForm(user=self.user, data={"name": ""})
+        self.assertFalse(form.is_valid())
+        self.assertIn("Category name cannot be empty", str(form.errors))
+
+    def test_form_ignores_deleted_categories_in_uniqueness_check(self):
+        from budget.forms import CustomCategoryForm
+
+        Category.objects.create(user=self.user, name="Old Food", is_deleted=True)
+
+        form = CustomCategoryForm(user=self.user, data={"name": "Old Food"})
+        self.assertTrue(form.is_valid())
