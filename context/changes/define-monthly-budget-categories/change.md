@@ -1,9 +1,9 @@
 ---
 change_id: define-monthly-budget-categories
 title: Define monthly budget categories
-status: planned
+status: implementing
 created: 2026-06-30
-updated: 2026-06-30
+updated: 2026-07-02
 archived_at: null
 ---
 

@@ -261,12 +261,12 @@ Run consolidated verification to ensure S-03 works reliably and does not regress
 
 #### Automated
 
-- [x] 1.1 Budget form validation tests pass for positive/zero/negative and uniqueness scenarios
-- [x] 1.2 Existing model ownership + dashboard service tests remain green
+- [x] 1.1 Budget form validation tests pass for positive/zero/negative and uniqueness scenarios — d4f4461
+- [x] 1.2 Existing model ownership + dashboard service tests remain green — d4f4461
 
 #### Manual
 
-- [x] 1.3 Custom category creation works for new names and is blocked for duplicate user names
+- [x] 1.3 Custom category creation works for new names and is blocked for duplicate user names — d4f4461
 
 ### Phase 2: Dashboard POST Orchestration and Upsert
 
