@@ -231,7 +231,7 @@ class HomeDashboardViewTests(TestCase):
         form = response.context["budget_form"]
         self.assertEqual(len(form.fields), 7)  # 7 default categories
 
-    def test_metrics_state_does_not_render_setup_form(self):
+    def test_metrics_state_renders_edit_form(self):
         category = Category.objects.get(user=self.user, name="Food")
         Budget.objects.create(
             user=self.user,
@@ -244,7 +244,8 @@ class HomeDashboardViewTests(TestCase):
         response = self.client.get(reverse("home"))
 
         self.assertNotContains(response, "Set up your monthly budget")
-        self.assertNotIn("budget_form", response.context)
+        self.assertContains(response, "Edit monthly budget")
+        self.assertIn("budget_form", response.context)
 
     def test_budget_form_error_display_inline(self):
         categories = list(Category.objects.filter(user=self.user, is_deleted=False))

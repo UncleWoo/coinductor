@@ -289,18 +289,18 @@ Run consolidated verification to ensure S-03 works reliably and does not regress
 
 #### Manual
 
-- [ ] 3.3 User can complete current-month budget setup from dashboard without admin
-- [ ] 3.4 Dashboard metrics reflect saved budget totals immediately
+- [x] 3.3 User can complete current-month budget setup from dashboard without admin — 825ea9a
+- [x] 3.4 Dashboard metrics reflect saved budget totals immediately — 825ea9a
 
 ### Phase 4: S-03 Final Verification and Stability
 
 #### Automated
 
-- [ ] 4.1 Targeted suites pass for budget + dashboard features
-- [ ] 4.2 Full project test suite passes
-- [ ] 4.3 CSS pipeline passes
+- [x] 4.1 Targeted suites pass for budget + dashboard features
+- [x] 4.2 Full project test suite passes
+- [x] 4.3 CSS pipeline passes
 
 #### Manual
 
-- [ ] 4.4 End-to-end setup flow exits no-budget state with at least one positive category budget
-- [ ] 4.5 Editing current-month budgets updates dashboard without constraint errors
+- [x] 4.4 End-to-end setup flow exits no-budget state with at least one positive category budget
+- [x] 4.5 Editing current-month budgets updates dashboard without constraint errors

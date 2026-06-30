@@ -110,6 +110,47 @@
           </p>
         {% endif %}
       </section>
+
+      <section class="rounded-lg border border-slate-200 bg-slate-50 p-6">
+        <h2 class="text-lg font-semibold text-slate-900">Edit monthly budget</h2>
+        <p class="mt-2 text-sm text-slate-700">
+          Adjust your category budgets for this month.
+        </p>
+
+        <form method="post" class="mt-6 space-y-4">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="budget-setup">
+
+          {% if budget_form.non_field_errors %}
+            <div class="rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+              {% for error in budget_form.non_field_errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="grid gap-4 md:grid-cols-2">
+            {% for field in budget_form %}
+              <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-900">
+                  {{ field.label }}
+                </label>
+                <div class="mt-1 flex items-center gap-2">
+                  {{ field }}
+                  <span class="text-sm text-slate-600">zł</span>
+                </div>
+                {% if field.errors %}
+                  <p class="mt-1 text-sm text-red-600">{{ field.errors|first }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+
+          <button type="submit" class="inline-block rounded bg-slate-600 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
+            Update budget
+          </button>
+        </form>
+      </section>
     {% endif %}
   </section>
 {% endblock %}

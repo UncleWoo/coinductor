@@ -77,9 +77,8 @@ def home(request):
         "show_budget_setup_placeholder": show_budget_setup_placeholder,
     }
     
-    # Pass budget form on no_budget state
-    if dashboard["empty_state"] == "no_budget":
-        context["budget_form"] = BudgetSetupForm(user=request.user)
+    # Pass budget form for setup (no_budget) and editing (metrics states)
+    context["budget_form"] = BudgetSetupForm(user=request.user)
     
     return render(
         request,
