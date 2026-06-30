@@ -284,8 +284,8 @@ Run consolidated verification to ensure S-03 works reliably and does not regress
 
 #### Automated
 
-- [x] 3.1 Dashboard template integration tests pass for no-budget/setup/edit branches
-- [x] 3.2 Tailwind build remains healthy after template updates
+- [x] 3.1 Dashboard template integration tests pass for no-budget/setup/edit branches — 825ea9a
+- [x] 3.2 Tailwind build remains healthy after template updates — 825ea9a
 
 #### Manual
 
