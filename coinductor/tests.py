@@ -102,3 +102,115 @@ class HomeDashboardViewTests(TestCase):
     def test_home_route_name_and_login_redirect_remain_home(self):
         self.assertEqual(reverse("home"), "/")
         self.assertEqual(self.client.get(reverse("home")).url.split("?")[0], reverse("login"))
+
+    def test_budget_setup_post_with_valid_amounts_redirects_to_home(self):
+        from decimal import Decimal
+
+        month_start = timezone.localdate().replace(day=1)
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+
+        data = {"action": "budget-setup"}
+        for i, category in enumerate(categories):
+            if i == 0:
+                data[f"category_{category.id}"] = "100.00"
+            else:
+                data[f"category_{category.id}"] = "0.00"
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.post(reverse("home"), data, follow=False)
+
+        self.assertRedirects(response, reverse("home"))
+
+        # Verify budgets were saved
+        saved_budgets = Budget.objects.filter(user=self.user, month=month_start)
+        self.assertEqual(saved_budgets.count(), len(categories))
+        self.assertTrue(any(b.amount == Decimal("100.00") for b in saved_budgets))
+
+    def test_budget_setup_post_with_all_zeros_re_renders_with_errors(self):
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+
+        data = {"action": "budget-setup"}
+        for category in categories:
+            data[f"category_{category.id}"] = "0.00"
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.post(reverse("home"), data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("budget_form", response.context)
+        self.assertTrue(response.context["budget_form"].errors)
+        self.assertIn("At least one category", str(response.context["budget_form"].errors))
+
+    def test_budget_setup_post_with_negative_amounts_re_renders_with_errors(self):
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+
+        data = {"action": "budget-setup"}
+        for category in categories:
+            data[f"category_{category.id}"] = "-50.00"
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.post(reverse("home"), data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("budget_form", response.context)
+        self.assertTrue(response.context["budget_form"].errors)
+
+    def test_budget_setup_post_unknown_action_redirects_to_home(self):
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+
+        data = {"action": "unknown-action"}
+        for category in categories:
+            data[f"category_{category.id}"] = "100.00"
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.post(reverse("home"), data, follow=False)
+
+        self.assertRedirects(response, reverse("home"))
+
+    def test_budget_setup_post_upserts_existing_budgets(self):
+        month_start = timezone.localdate().replace(day=1)
+        category = Category.objects.get(user=self.user, name="Food")
+
+        # Create initial budget
+        Budget.objects.create(
+            user=self.user,
+            category=category,
+            month=month_start,
+            amount=Decimal("200.00"),
+        )
+
+        # Submit updated amount
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+        data = {"action": "budget-setup"}
+        for cat in categories:
+            data[f"category_{cat.id}"] = "300.00"
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.post(reverse("home"), data, follow=False)
+
+        self.assertRedirects(response, reverse("home"))
+
+        # Verify no duplicate budgets, only one Food budget with updated amount
+        food_budgets = Budget.objects.filter(user=self.user, category=category, month=month_start)
+        self.assertEqual(food_budgets.count(), 1)
+        self.assertEqual(food_budgets.first().amount, Decimal("300.00"))
+
+    def test_budget_setup_post_clears_no_budget_empty_state(self):
+        month_start = timezone.localdate().replace(day=1)
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+
+        # Verify no-budget state before setup
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.context["empty_state"], "no_budget")
+
+        # Submit budget setup
+        data = {"action": "budget-setup"}
+        for i, category in enumerate(categories):
+            if i == 0:
+                data[f"category_{category.id}"] = "100.00"
+            else:
+                data[f"category_{category.id}"] = "0.00"
+
+        response = self.client.post(reverse("home"), data, follow=True)
+        self.assertEqual(response.context["empty_state"], "no_expenses")

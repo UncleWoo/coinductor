@@ -38,6 +38,35 @@ def logout_view(request):
 
 @login_required
 def home(request):
+    if request.method == "POST":
+        action = request.POST.get("action", "")
+        
+        if action == "budget-setup":
+            from budget.forms import BudgetSetupForm
+            form = BudgetSetupForm(user=request.user, data=request.POST)
+            
+            if form.is_valid():
+                form.save()
+                return redirect("home")
+            else:
+                # Re-render with errors
+                dashboard = get_dashboard_metrics(request.user)
+                return render(
+                    request,
+                    "home.html",
+                    {
+                        "dashboard": dashboard,
+                        "empty_state": dashboard["empty_state"],
+                        "on_track": dashboard["on_track"],
+                        "show_budget_setup_placeholder": True,
+                        "budget_form": form,
+                    },
+                )
+        
+        # Unknown action — redirect to home
+        return redirect("home")
+    
+    # GET request
     dashboard = get_dashboard_metrics(request.user)
     show_budget_setup_placeholder = request.GET.get("setup-budget") == "1"
     return render(
