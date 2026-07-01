@@ -39,7 +39,8 @@ class Category(OwnedSoftDeleteModel):
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "name"],
-                name="category_unique_user_name",
+                condition=models.Q(is_deleted=False),
+                name="category_unique_user_name_active",
             )
         ]
 

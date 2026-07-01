@@ -215,6 +215,57 @@ class HomeDashboardViewTests(TestCase):
         response = self.client.post(reverse("home"), data, follow=True)
         self.assertEqual(response.context["empty_state"], "no_expenses")
 
+    def test_budget_setup_post_creates_custom_category(self):
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+        data = {
+            "action": "budget-setup",
+            "name": "Pets",
+            "custom_category_amount": "100.00",
+        }
+        for category in categories:
+            data[f"category_{category.id}"] = "0.00"
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.post(reverse("home"), data, follow=False)
+
+        self.assertRedirects(response, reverse("home"))
+        pets_category = Category.objects.get(user=self.user, name="Pets", is_deleted=False)
+        self.assertEqual(
+            Budget.objects.get(
+                user=self.user,
+                category=pets_category,
+                month=timezone.localdate().replace(day=1),
+                is_deleted=False,
+            ).amount,
+            Decimal("100.00"),
+        )
+
+    def test_budget_setup_post_rejects_duplicate_custom_category_name(self):
+        Category.objects.create(user=self.user, name="Pets")
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+        data = {"action": "budget-setup", "name": "Pets", "custom_category_amount": "50.00"}
+        for i, category in enumerate(categories):
+            data[f"category_{category.id}"] = "100.00" if i == 0 else "0.00"
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.post(reverse("home"), data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("custom_category_form", response.context)
+        self.assertContains(response, "You already have a category named")
+
+    def test_budget_setup_post_rejects_custom_amount_without_name(self):
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+        data = {"action": "budget-setup", "name": "", "custom_category_amount": "80.00"}
+        for i, category in enumerate(categories):
+            data[f"category_{category.id}"] = "100.00" if i == 0 else "0.00"
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.post(reverse("home"), data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Category name cannot be empty.")
+
     def test_no_budget_state_renders_budget_setup_form(self):
         self.client.login(username=self.user.username, password=self.password)
         response = self.client.get(reverse("home"))
@@ -223,13 +274,16 @@ class HomeDashboardViewTests(TestCase):
         self.assertContains(response, "Set up your monthly budget")
         self.assertContains(response, "budget-setup")
         self.assertIn("budget_form", response.context)
+        self.assertIn("custom_category_form", response.context)
+        self.assertContains(response, "Add custom category (optional)")
 
     def test_budget_form_includes_all_user_categories(self):
         self.client.login(username=self.user.username, password=self.password)
         response = self.client.get(reverse("home"))
 
         form = response.context["budget_form"]
-        self.assertEqual(len(form.fields), 7)  # 7 default categories
+        self.assertEqual(len(form.fields), 8)  # 7 default categories + custom amount
+        self.assertIn("custom_category_amount", form.fields)
 
     def test_metrics_state_renders_edit_form(self):
         category = Category.objects.get(user=self.user, name="Food")
@@ -257,3 +311,48 @@ class HomeDashboardViewTests(TestCase):
         response = self.client.post(reverse("home"), data)
 
         self.assertContains(response, "At least one category")
+
+    def test_soft_deleted_custom_category_can_be_recreated(self):
+        """
+        Regression test: Soft-deleted custom categories should not block recreation
+        due to unique constraint. The constraint is now conditional on is_deleted=False.
+        """
+        self.client.login(username=self.user.username, password=self.password)
+
+        # Step 1: Create 'Pets' custom category
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+        data = {"action": "budget-setup", "name": "Pets", "custom_category_amount": "100.00"}
+        for cat in categories:
+            data[f"category_{cat.id}"] = "0.00"
+
+        response = self.client.post(reverse("home"), data)
+        self.assertEqual(response.status_code, 302)
+
+        # Verify Pets was created
+        pets = Category.objects.get(user=self.user, name="Pets", is_deleted=False)
+        self.assertIsNotNone(pets)
+
+        # Step 2: Soft-delete Pets
+        pets.is_deleted = True
+        pets.save()
+
+        # Step 3: Create 'Pets' again (should succeed due to conditional constraint)
+        categories = list(Category.objects.filter(user=self.user, is_deleted=False))
+        data = {"action": "budget-setup", "name": "Pets", "custom_category_amount": "50.00"}
+        for cat in categories:
+            data[f"category_{cat.id}"] = "0.00"
+
+        response = self.client.post(reverse("home"), data)
+        self.assertEqual(response.status_code, 302)
+
+        # Verify new Pets was created
+        active_pets = Category.objects.filter(user=self.user, name="Pets", is_deleted=False)
+        self.assertEqual(active_pets.count(), 1)
+
+        # Verify old deleted Pets still exists
+        all_pets = Category.objects.filter(user=self.user, name="Pets")
+        self.assertEqual(all_pets.count(), 2)
+
+        # Verify app remains functional
+        response = self.client.get(reverse("home"))
+        self.assertEqual(response.status_code, 200)

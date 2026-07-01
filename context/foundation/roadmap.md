@@ -32,6 +32,7 @@ Users don't stick to budgets because they lack daily feedback — they discover 
 | S-01 | dashboard-on-track-daily-limit | see dashboard with on-track yes/no, remaining budget, days left, daily limit | F-01, F-02 | US-01, FR-005, FR-006, FR-007 | proposed |
 | S-02 | add-expense-three-taps | add expense (amount, category, date) from dashboard; limit recalculates instantly | S-01 | FR-004, NFR ≤3 taps | proposed |
 | S-03 | define-monthly-budget-categories | define monthly budget per category (e.g., food: 2000, transport: 500) | F-02 | FR-003 | proposed |
+| S-04 | ui-improvements | use a more original visual style (tokens, components, layout polish) to distinguish Coinductor from default Tailwind templates | F-01, F-02, S-01 | FR-007, NFR responsive web | proposed |
 
 ## Streams
 
@@ -41,6 +42,7 @@ Navigation aid — groups items that share a Prerequisites chain. Canonical orde
 |---|---|---|---|
 | A | Core rebalancing flow | `F-01` → `F-02` → `S-01` → `S-02` | Must-have path; main_goal=speed prioritizes this strict sequence |
 | B | Budget setup | `F-02` → `S-03` | Joins Stream A at `S-01` (S-03 parallel with S-02) |
+| C | UI differentiation | `F-01` → `F-02` → `S-01` → `S-04` | Visual polish stream; S-04 runs in parallel with S-02 |
 
 ## Baseline
 
@@ -122,6 +124,19 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** Sequenced in parallel with S-02 because both are inputs to S-01's calculation but neither blocks the other. If budget setup is tedious (many fields, no sensible defaults), users never reach S-01. PRD §Non-Goals says "No advanced settings / customization — sensible defaults only", so this slice must provide a fast onboarding (e.g., common categories pre-filled with zero amounts, user edits only what they need).
 - **Status:** proposed
 
+### S-04: UI improvements (original visual identity)
+
+- **Outcome:** User sees a distinctive, non-generic Coinductor interface (custom visual language, refined spacing/typography/colors/components) while preserving S-01/S-02 usability guardrails
+- **Change ID:** ui-improvements
+- **PRD refs:** FR-007 (dashboard UX), NFR "responsive and usable on mobile browsers", PRD §Non-Goals ("No advanced settings / customization — sensible defaults only")
+- **Prerequisites:** F-01, F-02, S-01 (auth, data model, and dashboard baseline must exist before visual refinement)
+- **Parallel with:** S-02 (UI polish can run alongside expense-entry flow work)
+- **Blockers:** —
+- **Unknowns:**
+  - How far to go in v1 (token/theme pass only vs. broader component/layout redesign) — Owner: product/design. Block: no (scope can be fixed in `/10x-plan`).
+- **Risk:** Visual work can easily expand beyond MVP scope; constrain to high-impact UI surfaces (dashboard + auth + expense entry path) and keep interaction complexity flat to avoid hurting the ≤3 taps guardrail.
+- **Status:** proposed
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID | Suggested issue title | Ready for `/10x-plan` | Notes |
@@ -131,6 +146,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-01 | dashboard-on-track-daily-limit | Dashboard: on-track status + daily limit (US-01) | no | Blocked by F-01, F-02 |
 | S-02 | add-expense-three-taps | Add expense in ≤3 taps with instant recalc | no | Blocked by S-01 |
 | S-03 | define-monthly-budget-categories | Define monthly budget per category | no | Blocked by F-02 |
+| S-04 | ui-improvements | UI improvements: distinctive visual identity and dashboard polish | no | Blocked by F-01, F-02, S-01 |
 
 ## Open Roadmap Questions
 

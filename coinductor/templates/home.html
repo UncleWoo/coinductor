@@ -37,19 +37,47 @@
 
           <div class="grid gap-4 md:grid-cols-2">
             {% for field in budget_form %}
-              <div>
-                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-900">
-                  {{ field.label }}
-                </label>
-                <div class="mt-1 flex items-center gap-2">
-                  {{ field }}
-                  <span class="text-sm text-slate-600">zł</span>
+              {% if field.name != "custom_category_amount" %}
+                <div>
+                  <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-900">
+                    {{ field.label }}
+                  </label>
+                  <div class="mt-1 flex items-center gap-2">
+                    {{ field }}
+                    <span class="text-sm text-slate-600">zł</span>
+                  </div>
+                  {% if field.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ field.errors|first }}</p>
+                  {% endif %}
                 </div>
-                {% if field.errors %}
-                  <p class="mt-1 text-sm text-red-600">{{ field.errors|first }}</p>
-                {% endif %}
-              </div>
+              {% endif %}
             {% endfor %}
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div>
+              <label for="{{ custom_category_form.name.id_for_label }}" class="block text-sm font-medium text-slate-900">
+                Add custom category (optional)
+              </label>
+              <div class="mt-1">
+                {{ custom_category_form.name }}
+              </div>
+              {% if custom_category_form.name.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ custom_category_form.name.errors|first }}</p>
+              {% endif %}
+            </div>
+            <div>
+              <label for="{{ budget_form.custom_category_amount.id_for_label }}" class="block text-sm font-medium text-slate-900">
+                Custom category amount
+              </label>
+              <div class="mt-1 flex items-center gap-2">
+                {{ budget_form.custom_category_amount }}
+                <span class="text-sm text-slate-600">zł</span>
+              </div>
+              {% if budget_form.custom_category_amount.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ budget_form.custom_category_amount.errors|first }}</p>
+              {% endif %}
+            </div>
           </div>
 
           <button type="submit" class="inline-block rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
@@ -131,19 +159,47 @@
 
           <div class="grid gap-4 md:grid-cols-2">
             {% for field in budget_form %}
-              <div>
-                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-900">
-                  {{ field.label }}
-                </label>
-                <div class="mt-1 flex items-center gap-2">
-                  {{ field }}
-                  <span class="text-sm text-slate-600">zł</span>
+              {% if field.name != "custom_category_amount" %}
+                <div>
+                  <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-slate-900">
+                    {{ field.label }}
+                  </label>
+                  <div class="mt-1 flex items-center gap-2">
+                    {{ field }}
+                    <span class="text-sm text-slate-600">zł</span>
+                  </div>
+                  {% if field.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ field.errors|first }}</p>
+                  {% endif %}
                 </div>
-                {% if field.errors %}
-                  <p class="mt-1 text-sm text-red-600">{{ field.errors|first }}</p>
-                {% endif %}
-              </div>
+              {% endif %}
             {% endfor %}
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div>
+              <label for="{{ custom_category_form.name.id_for_label }}" class="block text-sm font-medium text-slate-900">
+                Add custom category (optional)
+              </label>
+              <div class="mt-1">
+                {{ custom_category_form.name }}
+              </div>
+              {% if custom_category_form.name.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ custom_category_form.name.errors|first }}</p>
+              {% endif %}
+            </div>
+            <div>
+              <label for="{{ budget_form.custom_category_amount.id_for_label }}" class="block text-sm font-medium text-slate-900">
+                Custom category amount
+              </label>
+              <div class="mt-1 flex items-center gap-2">
+                {{ budget_form.custom_category_amount }}
+                <span class="text-sm text-slate-600">zł</span>
+              </div>
+              {% if budget_form.custom_category_amount.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ budget_form.custom_category_amount.errors|first }}</p>
+              {% endif %}
+            </div>
           </div>
 
           <button type="submit" class="inline-block rounded bg-slate-600 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
