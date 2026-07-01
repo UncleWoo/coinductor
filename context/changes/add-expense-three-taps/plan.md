@@ -299,11 +299,11 @@ Run final verification across form, view, and dashboard behavior for S-02 with f
 
 #### Automated
 
-- [x] 4.1 Full affected suites pass
-- [x] 4.2 Project baseline passes
-- [x] 4.3 CSS pipeline remains healthy
+- [x] 4.1 Full affected suites pass — 7ac7481
+- [x] 4.2 Project baseline passes — 7ac7481
+- [x] 4.3 CSS pipeline remains healthy — 7ac7481
 
 #### Manual
 
-- [x] 4.4 End-to-end dashboard entry flow works with clear success/error feedback
-- [x] 4.5 No regressions in auth routing or existing S-01 metric cards
+- [x] 4.4 End-to-end dashboard entry flow works with clear success/error feedback — 7ac7481
+- [x] 4.5 No regressions in auth routing or existing S-01 metric cards — 7ac7481
