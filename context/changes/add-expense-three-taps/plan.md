@@ -275,13 +275,13 @@ Run final verification across form, view, and dashboard behavior for S-02 with f
 
 #### Automated
 
-- [x] 2.1 Home integration tests pass including POST create/error paths
-- [x] 2.2 Affected app suites pass together
+- [x] 2.1 Home integration tests pass including POST create/error paths — 5a45609
+- [x] 2.2 Affected app suites pass together — 5a45609
 
 #### Manual
 
-- [x] 2.3 Valid dashboard submit creates expense and returns updated dashboard
-- [x] 2.4 Invalid dashboard submit shows inline errors without clearing entered values
+- [x] 2.3 Valid dashboard submit creates expense and returns updated dashboard — 5a45609
+- [x] 2.4 Invalid dashboard submit shows inline errors without clearing entered values — 5a45609
 
 ### Phase 3: Inline Quick-Add Dashboard UX
 
@@ -292,8 +292,8 @@ Run final verification across form, view, and dashboard behavior for S-02 with f
 
 #### Manual
 
-- [ ] 3.3 Expense can be added from dashboard in ≤3 interactions in common path
-- [ ] 3.4 Updated dashboard metrics and status are visible immediately after save
+- [x] 3.3 Expense can be added from dashboard in ≤3 interactions in common path
+- [x] 3.4 Updated dashboard metrics and status are visible immediately after save
 
 ### Phase 4: End-to-End Verification and Stability Pass
 
