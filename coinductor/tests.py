@@ -356,3 +356,156 @@ class HomeDashboardViewTests(TestCase):
         # Verify app remains functional
         response = self.client.get(reverse("home"))
         self.assertEqual(response.status_code, 200)
+
+    def test_expense_quick_add_post_creates_expense_and_redirects(self):
+        """Valid POST to add-expense creates expense and redirects to home."""
+        category = Category.objects.get(user=self.user, name="Food")
+        month_start = timezone.localdate().replace(day=1)
+        Budget.objects.create(
+            user=self.user,
+            category=category,
+            month=month_start,
+            amount=Decimal("400.00"),
+        )
+
+        self.client.login(username=self.user.username, password=self.password)
+        
+        data = {
+            "action": "add-expense",
+            "amount": "25.50",
+            "category": category.id,
+            "date": "2026-07-01",
+            "description": "Lunch",
+        }
+        response = self.client.post(reverse("home"), data)
+        
+        self.assertRedirects(response, reverse("home"))
+        
+        # Verify expense was created
+        expense = Expense.objects.get(user=self.user, category=category)
+        self.assertEqual(expense.amount, Decimal("25.50"))
+        self.assertEqual(expense.description, "Lunch")
+
+    def test_expense_quick_add_post_updates_dashboard_metrics(self):
+        """After successful expense POST, dashboard shows updated metrics."""
+        category = Category.objects.get(user=self.user, name="Food")
+        month_start = timezone.localdate().replace(day=1)
+        Budget.objects.create(
+            user=self.user,
+            category=category,
+            month=month_start,
+            amount=Decimal("400.00"),
+        )
+
+        self.client.login(username=self.user.username, password=self.password)
+        
+        # Get initial metrics
+        response_before = self.client.get(reverse("home"))
+        metrics_before = response_before.context["dashboard"]
+        
+        # Add expense
+        data = {
+            "action": "add-expense",
+            "amount": "50.00",
+            "category": category.id,
+            "date": timezone.localdate().isoformat(),
+        }
+        self.client.post(reverse("home"), data)
+        
+        # Get updated metrics
+        response_after = self.client.get(reverse("home"))
+        metrics_after = response_after.context["dashboard"]
+        
+        # Verify metrics changed
+        self.assertLess(
+            metrics_after["remaining_budget"],
+            metrics_before["remaining_budget"]
+        )
+        self.assertEqual(
+            metrics_after["total_spent"],
+            Decimal("50.00")
+        )
+
+    def test_expense_quick_add_invalid_post_shows_inline_errors(self):
+        """Invalid POST preserves form data and shows errors."""
+        category = Category.objects.get(user=self.user, name="Food")
+        
+        self.client.login(username=self.user.username, password=self.password)
+        
+        # Submit without required amount
+        data = {
+            "action": "add-expense",
+            "category": category.id,
+            "date": "2026-07-01",
+        }
+        response = self.client.post(reverse("home"), data)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("expense_form", response.context)
+        self.assertFalse(response.context["expense_form"].is_valid())
+        self.assertIn("amount", response.context["expense_form"].errors)
+
+    def test_anonymous_user_cannot_post_expense(self):
+        """Anonymous POST to add-expense redirects to login."""
+        category = Category.objects.get(user=self.user, name="Food")
+        
+        data = {
+            "action": "add-expense",
+            "amount": "25.50",
+            "category": category.id,
+            "date": "2026-07-01",
+        }
+        response = self.client.post(reverse("home"), data)
+        
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('home')}")
+        self.assertEqual(Expense.objects.count(), 0)
+
+    def test_dashboard_shows_quick_add_form_when_budget_exists(self):
+        """Dashboard renders quick-add expense form when budget is set."""
+        category = Category.objects.get(user=self.user, name="Food")
+        month_start = timezone.localdate().replace(day=1)
+        Budget.objects.create(
+            user=self.user,
+            category=category,
+            month=month_start,
+            amount=Decimal("400.00"),
+        )
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.get(reverse("home"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Add expense")
+        self.assertContains(response, 'name="action" value="add-expense"')
+        self.assertIn("expense_form", response.context)
+
+    def test_dashboard_shows_quick_add_form_in_no_budget_state(self):
+        """Dashboard renders quick-add expense form even without budget."""
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.get(reverse("home"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Add expense")
+        self.assertContains(response, 'name="action" value="add-expense"')
+        self.assertContains(response, "You can track expenses even without a budget")
+        self.assertIn("expense_form", response.context)
+
+    def test_quick_add_form_preserves_on_track_status_rendering(self):
+        """Quick-add form presence doesn't break on-track/off-track display."""
+        category = Category.objects.get(user=self.user, name="Food")
+        month_start = timezone.localdate().replace(day=1)
+        Budget.objects.create(
+            user=self.user,
+            category=category,
+            month=month_start,
+            amount=Decimal("400.00"),
+        )
+
+        self.client.login(username=self.user.username, password=self.password)
+        response = self.client.get(reverse("home"))
+
+        self.assertEqual(response.status_code, 200)
+        # Should still show on-track badge
+        self.assertTrue(response.context["on_track"])
+        # And quick-add form
+        self.assertIn("expense_form", response.context)

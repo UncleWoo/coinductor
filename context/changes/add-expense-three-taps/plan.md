@@ -264,31 +264,31 @@ Run final verification across form, view, and dashboard behavior for S-02 with f
 
 #### Automated
 
-- [x] 1.1 Form tests pass for validation and ownership scenarios
-- [x] 1.2 Existing budget service tests remain green
+- [x] 1.1 Form tests pass for validation and ownership scenarios — e7afe81
+- [x] 1.2 Existing budget service tests remain green — e7afe81
 
 #### Manual
 
-- [x] 1.3 Form rejects cross-user category and accepts valid same-user category
+- [x] 1.3 Form rejects cross-user category and accepts valid same-user category — e7afe81
 
 ### Phase 2: Dashboard POST Flow Wiring
 
 #### Automated
 
-- [ ] 2.1 Home integration tests pass including POST create/error paths
-- [ ] 2.2 Affected app suites pass together
+- [x] 2.1 Home integration tests pass including POST create/error paths
+- [x] 2.2 Affected app suites pass together
 
 #### Manual
 
-- [ ] 2.3 Valid dashboard submit creates expense and returns updated dashboard
-- [ ] 2.4 Invalid dashboard submit shows inline errors without clearing entered values
+- [x] 2.3 Valid dashboard submit creates expense and returns updated dashboard
+- [x] 2.4 Invalid dashboard submit shows inline errors without clearing entered values
 
 ### Phase 3: Inline Quick-Add Dashboard UX
 
 #### Automated
 
-- [ ] 3.1 Dashboard UI tests pass for quick-add presence and state branches
-- [ ] 3.2 Tailwind build succeeds after template changes
+- [x] 3.1 Dashboard UI tests pass for quick-add presence and state branches
+- [x] 3.2 Tailwind build succeeds after template changes
 
 #### Manual
 

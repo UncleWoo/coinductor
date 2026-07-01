@@ -7,8 +7,8 @@ from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
-from budget.forms import BudgetSetupForm, CustomCategoryForm
-from budget.models import Budget
+from budget.forms import BudgetSetupForm, CustomCategoryForm, ExpenseQuickAddForm
+from budget.models import Budget, Category
 from budget.services import get_dashboard_metrics
 
 
@@ -45,64 +45,21 @@ def home(request):
     if request.method == "POST":
         action = request.POST.get("action", "")
 
-        if action == "budget-setup":
-            budget_form = BudgetSetupForm(user=request.user, data=request.POST)
-            custom_category_name = request.POST.get("name", "").strip()
-            custom_category_amount_raw = request.POST.get("custom_category_amount", "").strip()
-            custom_category_form = CustomCategoryForm(
-                user=request.user, data={"name": custom_category_name}
+        if action == "add-expense":
+            expense_form = ExpenseQuickAddForm(
+                user=request.user, data=request.POST
             )
-
-            custom_category_valid = True
-            if custom_category_name:
-                custom_category_valid = custom_category_form.is_valid()
-            elif custom_category_amount_raw not in {"", "0", "0.0", "0.00"}:
-                custom_category_form.add_error(
-                    "name", "Provide a category name when setting custom category amount."
-                )
-                custom_category_valid = False
-            else:
-                custom_category_form = CustomCategoryForm(user=request.user)
-
-            if budget_form.is_valid() and custom_category_valid:
-                custom_category = None
-                if custom_category_name:
-                    try:
-                        custom_category = custom_category_form.save()
-                    except IntegrityError:
-                        # Should not happen with conditional constraint, but be defensive
-                        custom_category_form.add_error(
-                            "name", f"A category named '{custom_category_name}' already exists."
-                        )
-                        custom_category_valid = False
-                        # Re-render with error
-                        dashboard = get_dashboard_metrics(request.user)
-                        return render(
-                            request,
-                            "home.html",
-                            {
-                                "dashboard": dashboard,
-                                "empty_state": dashboard["empty_state"],
-                                "on_track": dashboard["on_track"],
-                                "budget_form": budget_form,
-                                "custom_category_form": custom_category_form,
-                            },
-                        )
-                budget_form.save()
-                if custom_category:
-                    custom_amount = budget_form.cleaned_data.get(
-                        "custom_category_amount"
-                    ) or 0
-                    Budget.objects.update_or_create(
-                        user=request.user,
-                        category=custom_category,
-                        month=timezone.localdate().replace(day=1),
-                        defaults={"amount": custom_amount, "is_deleted": False},
-                    )
+            if expense_form.is_valid():
+                expense_form.save()
                 return redirect("home")
             else:
                 # Re-render with errors
                 dashboard = get_dashboard_metrics(request.user)
+                budget_form = BudgetSetupForm(user=request.user)
+                custom_category_form = CustomCategoryForm(user=request.user)
+                user_categories = Category.objects.filter(
+                    user=request.user, is_deleted=False
+                ).order_by("name")
                 return render(
                     request,
                     "home.html",
@@ -112,6 +69,79 @@ def home(request):
                         "on_track": dashboard["on_track"],
                         "budget_form": budget_form,
                         "custom_category_form": custom_category_form,
+                        "user_categories": user_categories,
+                        "expense_form": expense_form,
+                    },
+                )
+
+        elif action == "add-category":
+            custom_category_form = CustomCategoryForm(
+                user=request.user, data=request.POST
+            )
+            if custom_category_form.is_valid():
+                try:
+                    custom_category_form.save()
+                    return redirect("home")
+                except IntegrityError:
+                    custom_category_form.add_error(
+                        "name", "A category with this name already exists."
+                    )
+            # Re-render with errors
+            dashboard = get_dashboard_metrics(request.user)
+            budget_form = BudgetSetupForm(user=request.user)
+            expense_form = ExpenseQuickAddForm(user=request.user)
+            user_categories = Category.objects.filter(
+                user=request.user, is_deleted=False
+            ).order_by("name")
+            return render(
+                request,
+                "home.html",
+                {
+                    "dashboard": dashboard,
+                    "empty_state": dashboard["empty_state"],
+                    "on_track": dashboard["on_track"],
+                    "budget_form": budget_form,
+                    "custom_category_form": custom_category_form,
+                    "user_categories": user_categories,
+                    "expense_form": expense_form,
+                },
+            )
+
+        elif action == "delete-category":
+            category_id = request.POST.get("category_id")
+            if category_id:
+                category = Category.objects.filter(
+                    id=category_id, user=request.user, is_deleted=False
+                ).first()
+                if category:
+                    category.is_deleted = True
+                    category.save()
+            return redirect("home")
+
+        elif action == "budget-setup":
+            budget_form = BudgetSetupForm(user=request.user, data=request.POST)
+            if budget_form.is_valid():
+                budget_form.save()
+                return redirect("home")
+            else:
+                # Re-render with errors
+                dashboard = get_dashboard_metrics(request.user)
+                custom_category_form = CustomCategoryForm(user=request.user)
+                expense_form = ExpenseQuickAddForm(user=request.user)
+                user_categories = Category.objects.filter(
+                    user=request.user, is_deleted=False
+                ).order_by("name")
+                return render(
+                    request,
+                    "home.html",
+                    {
+                        "dashboard": dashboard,
+                        "empty_state": dashboard["empty_state"],
+                        "on_track": dashboard["on_track"],
+                        "budget_form": budget_form,
+                        "custom_category_form": custom_category_form,
+                        "user_categories": user_categories,
+                        "expense_form": expense_form,
                     },
                 )
 
@@ -120,16 +150,19 @@ def home(request):
 
     # GET request
     dashboard = get_dashboard_metrics(request.user)
+    user_categories = Category.objects.filter(
+        user=request.user, is_deleted=False
+    ).order_by("name")
 
     context = {
         "dashboard": dashboard,
         "empty_state": dashboard["empty_state"],
         "on_track": dashboard["on_track"],
+        "budget_form": BudgetSetupForm(user=request.user),
+        "custom_category_form": CustomCategoryForm(user=request.user),
+        "expense_form": ExpenseQuickAddForm(user=request.user),
+        "user_categories": user_categories,
     }
-
-    # Pass budget form for setup (no_budget) and editing (metrics states)
-    context["budget_form"] = BudgetSetupForm(user=request.user)
-    context["custom_category_form"] = CustomCategoryForm(user=request.user)
 
     return render(
         request,
