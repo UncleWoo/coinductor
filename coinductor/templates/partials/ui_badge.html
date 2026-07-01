@@ -1,0 +1,10 @@
+{# Status badge with variant support: success, warn, danger, neutral #}
+{% if variant == 'success' %}
+  <span class="badge-success">{{ text }}</span>
+{% elif variant == 'warn' %}
+  <span class="badge-warn">{{ text }}</span>
+{% elif variant == 'danger' %}
+  <span class="badge-danger">{{ text }}</span>
+{% else %}
+  <span class="badge-neutral">{{ text }}</span>
+{% endif %}

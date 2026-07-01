@@ -7,17 +7,17 @@
     <title>Coinductor</title>
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
   </head>
-  <body class="min-h-screen bg-slate-50 text-slate-900">
-    <header class="border-b border-slate-200 bg-white">
+  <body class="page-shell">
+    <header class="border-b border-gray-200 bg-brand-white shadow-sm">
       <nav class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <a href="/" class="text-lg font-semibold">Coinductor</a>
-        <div class="flex items-center gap-4 text-sm font-medium">
+        <a href="/" class="text-lg font-semibold text-brand-charcoal">Coinductor</a>
+        <div class="flex items-center gap-4 text-sm">
           {% if user.is_authenticated %}
-            <span>Welcome, {{ user.username }}</span>
-            <a href="{% url 'logout' %}" class="text-blue-600 hover:text-blue-700">Logout</a>
+            <span class="text-brand-charcoal">Welcome, {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
           {% else %}
-            <a href="{% url 'login' %}" class="text-blue-600 hover:text-blue-700">Login</a>
-            <a href="{% url 'signup' %}" class="text-blue-600 hover:text-blue-700">Sign Up</a>
+            <a href="{% url 'login' %}" class="nav-link">Login</a>
+            <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
           {% endif %}
         </div>
       </nav>
@@ -25,7 +25,7 @@
     {% if messages %}
       <div class="mx-auto max-w-5xl px-4 py-3">
         {% for message in messages %}
-          <div class="mb-2 rounded border border-slate-300 bg-slate-100 px-4 py-3 text-slate-800">
+          <div class="mb-2 rounded-brand border border-brand-accent bg-yellow-50 px-4 py-3 text-brand-charcoal shadow-sm">
             {{ message }}
           </div>
         {% endfor %}

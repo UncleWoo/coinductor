@@ -1,0 +1,6 @@
+{# Reusable card component with brand styling #}
+<div class="ui-card">
+  {% block card_content %}
+    {{ content|default:"" }}
+  {% endblock %}
+</div>

@@ -244,8 +244,8 @@ No data migration required. This is presentation-layer and test-assertion refact
 
 #### Automated
 
-- [x] 1.1 Tailwind build outputs CSS with new brand token classes available.
-- [x] 1.2 Existing Django test suite still passes before template adoption changes.
+- [x] 1.1 Tailwind build outputs CSS with new brand token classes available. — 6f5ef5d
+- [x] 1.2 Existing Django test suite still passes before template adoption changes. — 6f5ef5d
 
 #### Manual
 
@@ -256,8 +256,8 @@ No data migration required. This is presentation-layer and test-assertion refact
 
 #### Automated
 
-- [ ] 2.1 Templates render with new partial includes without template resolution errors.
-- [ ] 2.2 Existing route-level tests still pass after partial extraction.
+- [x] 2.1 Templates render with new partial includes without template resolution errors.
+- [x] 2.2 Existing route-level tests still pass after partial extraction.
 
 #### Manual
 
