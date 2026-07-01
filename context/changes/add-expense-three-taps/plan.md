@@ -264,12 +264,12 @@ Run final verification across form, view, and dashboard behavior for S-02 with f
 
 #### Automated
 
-- [ ] 1.1 Form tests pass for validation and ownership scenarios
-- [ ] 1.2 Existing budget service tests remain green
+- [x] 1.1 Form tests pass for validation and ownership scenarios
+- [x] 1.2 Existing budget service tests remain green
 
 #### Manual
 
-- [ ] 1.3 Form rejects cross-user category and accepts valid same-user category
+- [x] 1.3 Form rejects cross-user category and accepts valid same-user category
 
 ### Phase 2: Dashboard POST Flow Wiring
 

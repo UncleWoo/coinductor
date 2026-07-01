@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+from django.utils import timezone
 
 from budget.models import DEFAULT_CATEGORIES, Budget, Category, Expense
 from budget.services import get_dashboard_metrics
@@ -426,3 +427,120 @@ class CustomCategoryFormTests(TestCase):
 
         form = CustomCategoryForm(user=self.user, data={"name": "Old Food"})
         self.assertTrue(form.is_valid())
+
+
+class ExpenseQuickAddFormTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="formuser@example.com", password="testpass123"
+        )
+        self.other_user = User.objects.create_user(
+            username="otherformuser@example.com", password="testpass123"
+        )
+        # Use existing default categories instead of creating duplicates
+        self.user_category = Category.objects.get(user=self.user, name="Food")
+        self.other_category = Category.objects.get(
+            user=self.other_user, name="Transport"
+        )
+
+    def test_form_creates_valid_expense(self):
+        from budget.forms import ExpenseQuickAddForm
+
+        form = ExpenseQuickAddForm(
+            user=self.user,
+            data={
+                "amount": "25.50",
+                "category": self.user_category.id,
+                "date": "2026-06-15",
+                "description": "Lunch",
+            },
+        )
+        self.assertTrue(form.is_valid())
+        expense = form.save()
+        self.assertEqual(expense.user, self.user)
+        self.assertEqual(expense.amount, Decimal("25.50"))
+        self.assertEqual(expense.category, self.user_category)
+        self.assertEqual(expense.date, date(2026, 6, 15))
+        self.assertEqual(expense.description, "Lunch")
+
+    def test_form_scopes_category_choices_to_user(self):
+        from budget.forms import ExpenseQuickAddForm
+
+        form = ExpenseQuickAddForm(user=self.user)
+        category_ids = [c.id for c in form.fields["category"].queryset]
+        self.assertIn(self.user_category.id, category_ids)
+        self.assertNotIn(self.other_category.id, category_ids)
+
+    def test_form_rejects_cross_user_category(self):
+        from budget.forms import ExpenseQuickAddForm
+
+        form = ExpenseQuickAddForm(
+            user=self.user,
+            data={
+                "amount": "10.00",
+                "category": self.other_category.id,
+                "date": "2026-06-15",
+            },
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("category", form.errors)
+
+    def test_form_requires_amount(self):
+        from budget.forms import ExpenseQuickAddForm
+
+        form = ExpenseQuickAddForm(
+            user=self.user,
+            data={
+                "category": self.user_category.id,
+                "date": "2026-06-15",
+            },
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("amount", form.errors)
+
+    def test_form_requires_category(self):
+        from budget.forms import ExpenseQuickAddForm
+
+        form = ExpenseQuickAddForm(
+            user=self.user,
+            data={
+                "amount": "10.00",
+                "date": "2026-06-15",
+            },
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("category", form.errors)
+
+    def test_form_requires_date(self):
+        from budget.forms import ExpenseQuickAddForm
+
+        form = ExpenseQuickAddForm(
+            user=self.user,
+            data={
+                "amount": "10.00",
+                "category": self.user_category.id,
+            },
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("date", form.errors)
+
+    def test_form_defaults_date_to_today(self):
+        from budget.forms import ExpenseQuickAddForm
+
+        form = ExpenseQuickAddForm(user=self.user)
+        self.assertEqual(form.initial["date"], timezone.localdate())
+
+    def test_form_allows_optional_description(self):
+        from budget.forms import ExpenseQuickAddForm
+
+        form = ExpenseQuickAddForm(
+            user=self.user,
+            data={
+                "amount": "10.00",
+                "category": self.user_category.id,
+                "date": "2026-06-15",
+            },
+        )
+        self.assertTrue(form.is_valid())
+        expense = form.save()
+        self.assertEqual(expense.description, "")

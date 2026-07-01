@@ -4,24 +4,17 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 import calendar
 
-from budget.models import Budget, Category
+from budget.models import Budget, Category, Expense
 
 
 class BudgetSetupForm(forms.Form):
-    """Form for setting current-month category budgets with optional custom category creation."""
+    """Form for setting current-month category budgets."""
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user
         month_start = timezone.localdate().replace(day=1)
         self.month_start = month_start
-        self.fields["custom_category_amount"] = forms.DecimalField(
-            label="Custom category amount",
-            min_value=Decimal("0.00"),
-            decimal_places=2,
-            initial=Decimal("0.00"),
-            required=False,
-        )
 
         # Build fields for each user category (predefined + any custom)
         user_categories = Category.objects.filter(user=user, is_deleted=False).order_by("name")
@@ -52,7 +45,7 @@ class BudgetSetupForm(forms.Form):
         # Extract budget amounts
         amounts = []
         for key, value in cleaned.items():
-            if key.startswith("category_") or key == "custom_category_amount":
+            if key.startswith("category_"):
                 if value is None:
                     value = Decimal("0.00")
                 amounts.append(value)
@@ -119,3 +112,37 @@ class CustomCategoryForm(forms.ModelForm):
         if commit:
             category.save()
         return category
+
+
+class ExpenseQuickAddForm(forms.ModelForm):
+    """Form for quick-add expense entry from dashboard."""
+
+    class Meta:
+        model = Expense
+        fields = ["amount", "category", "date", "description"]
+        widgets = {
+            "date": forms.DateInput(attrs={"type": "date"}),
+        }
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        
+        # Scope category choices to user-owned categories only
+        self.fields["category"].queryset = Category.objects.filter(
+            user=user, is_deleted=False
+        ).order_by("name")
+        
+        # Set default date to today
+        if not self.initial.get("date"):
+            self.initial["date"] = timezone.localdate()
+        
+        # Make description optional
+        self.fields["description"].required = False
+
+    def save(self, commit=True):
+        expense = super().save(commit=False)
+        expense.user = self.user
+        if commit:
+            expense.save()
+        return expense
