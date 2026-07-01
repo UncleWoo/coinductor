@@ -244,8 +244,8 @@ No data migration required. This is presentation-layer and test-assertion refact
 
 #### Automated
 
-- [ ] 1.1 Tailwind build outputs CSS with new brand token classes available.
-- [ ] 1.2 Existing Django test suite still passes before template adoption changes.
+- [x] 1.1 Tailwind build outputs CSS with new brand token classes available.
+- [x] 1.2 Existing Django test suite still passes before template adoption changes.
 
 #### Manual
 
