@@ -287,23 +287,23 @@ Run final verification across form, view, and dashboard behavior for S-02 with f
 
 #### Automated
 
-- [x] 3.1 Dashboard UI tests pass for quick-add presence and state branches
-- [x] 3.2 Tailwind build succeeds after template changes
+- [x] 3.1 Dashboard UI tests pass for quick-add presence and state branches — ba59ef1
+- [x] 3.2 Tailwind build succeeds after template changes — ba59ef1
 
 #### Manual
 
-- [x] 3.3 Expense can be added from dashboard in ≤3 interactions in common path
-- [x] 3.4 Updated dashboard metrics and status are visible immediately after save
+- [x] 3.3 Expense can be added from dashboard in ≤3 interactions in common path — ba59ef1
+- [x] 3.4 Updated dashboard metrics and status are visible immediately after save — ba59ef1
 
 ### Phase 4: End-to-End Verification and Stability Pass
 
 #### Automated
 
-- [ ] 4.1 Full affected suites pass
-- [ ] 4.2 Project baseline passes
-- [ ] 4.3 CSS pipeline remains healthy
+- [x] 4.1 Full affected suites pass
+- [x] 4.2 Project baseline passes
+- [x] 4.3 CSS pipeline remains healthy
 
 #### Manual
 
-- [ ] 4.4 End-to-end dashboard entry flow works with clear success/error feedback
-- [ ] 4.5 No regressions in auth routing or existing S-01 metric cards
+- [x] 4.4 End-to-end dashboard entry flow works with clear success/error feedback
+- [x] 4.5 No regressions in auth routing or existing S-01 metric cards
