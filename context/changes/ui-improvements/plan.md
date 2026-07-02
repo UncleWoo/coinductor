@@ -256,8 +256,8 @@ No data migration required. This is presentation-layer and test-assertion refact
 
 #### Automated
 
-- [x] 2.1 Templates render with new partial includes without template resolution errors.
-- [x] 2.2 Existing route-level tests still pass after partial extraction.
+- [x] 2.1 Templates render with new partial includes without template resolution errors. — aa567b3
+- [x] 2.2 Existing route-level tests still pass after partial extraction. — aa567b3
 
 #### Manual
 
@@ -268,8 +268,8 @@ No data migration required. This is presentation-layer and test-assertion refact
 
 #### Automated
 
-- [ ] 3.1 Django tests pass with restyled templates.
-- [ ] 3.2 No template context key regressions on dashboard/auth routes.
+- [x] 3.1 Django tests pass with restyled templates.
+- [x] 3.2 No template context key regressions on dashboard/auth routes.
 
 #### Manual
 
