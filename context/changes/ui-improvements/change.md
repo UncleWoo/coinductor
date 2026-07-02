@@ -1,9 +1,9 @@
 ---
 change_id: ui-improvements
 title: UI improvements from S-04 roadmap slice
-status: implementing
+status: implemented
 created: 2026-06-30
-updated: 2026-07-01
+updated: 2026-07-02
 archived_at: null
 ---
 

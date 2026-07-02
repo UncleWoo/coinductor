@@ -280,8 +280,8 @@ No data migration required. This is presentation-layer and test-assertion refact
 
 #### Automated
 
-- [x] 4.1 Updated test suite passes with reduced brittle class coupling.
-- [x] 4.2 No regressions detected in dashboard/auth route behavior checks.
+- [x] 4.1 Updated test suite passes with reduced brittle class coupling. — 5d4a5a0
+- [x] 4.2 No regressions detected in dashboard/auth route behavior checks. — 5d4a5a0
 
 #### Manual
 
