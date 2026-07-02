@@ -268,8 +268,8 @@ No data migration required. This is presentation-layer and test-assertion refact
 
 #### Automated
 
-- [x] 3.1 Django tests pass with restyled templates.
-- [x] 3.2 No template context key regressions on dashboard/auth routes.
+- [x] 3.1 Django tests pass with restyled templates. — 3a57c69
+- [x] 3.2 No template context key regressions on dashboard/auth routes. — 3a57c69
 
 #### Manual
 
@@ -280,8 +280,8 @@ No data migration required. This is presentation-layer and test-assertion refact
 
 #### Automated
 
-- [ ] 4.1 Updated test suite passes with reduced brittle class coupling.
-- [ ] 4.2 No regressions detected in dashboard/auth route behavior checks.
+- [x] 4.1 Updated test suite passes with reduced brittle class coupling.
+- [x] 4.2 No regressions detected in dashboard/auth route behavior checks.
 
 #### Manual
 

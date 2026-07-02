@@ -71,7 +71,8 @@ class HomeDashboardViewTests(TestCase):
         self.assertContains(response, "On track")
         self.assertContains(response, "No expenses yet for this month")
         self.assertContains(response, "Spending velocity")
-        self.assertContains(response, "w-1/3")
+        # Velocity bar should show "ahead" status (green indicator)
+        self.assertContains(response, "bg-green-500")
         self.assertEqual(response.context["empty_state"], "no_expenses")
 
     def test_dashboard_renders_metrics_state(self):
@@ -96,7 +97,8 @@ class HomeDashboardViewTests(TestCase):
         self.assertContains(response, "Daily limit")
         self.assertContains(response, "Spending velocity")
         self.assertContains(response, "Off track")
-        self.assertContains(response, "w-2/3")
+        # Velocity bar should show "behind" status (red indicator)
+        self.assertContains(response, "bg-red-500")
         self.assertIsNone(response.context["empty_state"])
 
     def test_home_route_name_and_login_redirect_remain_home(self):

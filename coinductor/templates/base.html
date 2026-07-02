@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
   </head>
   <body class="page-shell">
-    <header class="border-b border-gray-200 bg-brand-white shadow-sm">
+    <header class="border-b border-brand-charcoal bg-brand-charcoal shadow-sm">
       <nav class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <a href="/" class="text-lg font-semibold text-brand-charcoal">Coinductor</a>
+        <a href="/" class="text-lg font-semibold text-brand-accent hover:text-opacity-90 transition-colors">Coinductor</a>
         <div class="flex items-center gap-4 text-sm">
           {% if user.is_authenticated %}
-            <span class="text-brand-charcoal">Welcome, {{ user.username }}</span>
-            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+            <span class="text-brand-accent">Welcome, {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="font-medium text-brand-accent hover:text-opacity-80 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 focus:ring-offset-brand-charcoal">Logout</a>
           {% else %}
-            <a href="{% url 'login' %}" class="nav-link">Login</a>
-            <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+            <a href="{% url 'login' %}" class="font-medium text-brand-accent hover:text-opacity-80 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 focus:ring-offset-brand-charcoal">Login</a>
+            <a href="{% url 'signup' %}" class="font-medium text-brand-accent hover:text-opacity-80 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 focus:ring-offset-brand-charcoal">Sign Up</a>
           {% endif %}
         </div>
       </nav>
