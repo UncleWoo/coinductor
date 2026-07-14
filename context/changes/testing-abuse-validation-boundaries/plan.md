@@ -206,29 +206,29 @@ Apply only necessary runtime hardening revealed by tests, then capture durable m
 
 #### Manual
 
-- [ ] 1.3 Anonymous POST actions redirect to login with no unauthorized side effects
-- [ ] 1.4 Cross-user forged references do not mutate protected records
+- [x] 1.3 Anonymous POST actions redirect to login with no unauthorized side effects
+- [x] 1.4 Cross-user forged references do not mutate protected records
 
 ### Phase 2: Validation Boundary Contract Matrix
 
 #### Automated
 
-- [x] 2.1 Validation matrix tests pass in home integration suite
-- [x] 2.2 Budget and expense form regression tests remain green
+- [x] 2.1 Validation matrix tests pass in home integration suite — 6b66fe6
+- [x] 2.2 Budget and expense form regression tests remain green — 6b66fe6
 
 #### Manual
 
-- [ ] 2.3 Malformed payloads per action do not create or mutate protected records
-- [ ] 2.4 Inline error behavior remains stable where expected
+- [x] 2.3 Malformed payloads per action do not create or mutate protected records
+- [x] 2.4 Inline error behavior remains stable where expected
 
 ### Phase 3: Minimal Hardening and Verification Evidence
 
 #### Automated
 
-- [ ] 3.1 Home integration suite passes with abuse and validation contracts
-- [ ] 3.2 Combined affected app suites pass
+- [x] 3.1 Home integration suite passes with abuse and validation contracts
+- [x] 3.2 Combined affected app suites pass
 
 #### Manual
 
-- [ ] 3.3 `reviews/manual-verification.md` exists with full 4-action smoke matrix and outcomes
-- [ ] 3.4 No unauthorized data mutation is observable after manual smoke scenarios
+- [x] 3.3 `reviews/manual-verification.md` exists with full 4-action smoke matrix and outcomes
+- [x] 3.4 No unauthorized data mutation is observable after manual smoke scenarios
