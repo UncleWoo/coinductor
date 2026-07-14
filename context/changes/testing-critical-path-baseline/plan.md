@@ -238,8 +238,8 @@ Finalize Phase-1 completion evidence, preserving a durable manual verification a
 
 #### Automated
 
-- [x] 3.1 Final targeted + aggregate verification commands executed for this phase set
+- [x] 3.1 Final targeted + aggregate verification commands executed for this phase set — cc21a0a
 
 #### Manual
 
-- [x] 3.2 `reviews/manual-verification.md` exists with completed scenario outcomes for risks #1/#2/#5 and no unresolved findings
+- [x] 3.2 `reviews/manual-verification.md` exists with completed scenario outcomes for risks #1/#2/#5 and no unresolved findings — cc21a0a

@@ -1,7 +1,7 @@
 ---
 change_id: testing-critical-path-baseline
 title: Testing critical path baseline
-status: implementing
+status: implemented
 created: 2026-07-10
 updated: 2026-07-14
 archived_at: null
