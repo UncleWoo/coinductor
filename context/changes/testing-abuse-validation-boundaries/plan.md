@@ -206,8 +206,8 @@ Apply only necessary runtime hardening revealed by tests, then capture durable m
 
 #### Manual
 
-- [x] 1.3 Anonymous POST actions redirect to login with no unauthorized side effects
-- [x] 1.4 Cross-user forged references do not mutate protected records
+- [x] 1.3 Anonymous POST actions redirect to login with no unauthorized side effects — ef93a2a
+- [x] 1.4 Cross-user forged references do not mutate protected records — ef93a2a
 
 ### Phase 2: Validation Boundary Contract Matrix
 
@@ -218,17 +218,17 @@ Apply only necessary runtime hardening revealed by tests, then capture durable m
 
 #### Manual
 
-- [x] 2.3 Malformed payloads per action do not create or mutate protected records
-- [x] 2.4 Inline error behavior remains stable where expected
+- [x] 2.3 Malformed payloads per action do not create or mutate protected records — ef93a2a
+- [x] 2.4 Inline error behavior remains stable where expected — ef93a2a
 
 ### Phase 3: Minimal Hardening and Verification Evidence
 
 #### Automated
 
-- [x] 3.1 Home integration suite passes with abuse and validation contracts
-- [x] 3.2 Combined affected app suites pass
+- [x] 3.1 Home integration suite passes with abuse and validation contracts — ef93a2a
+- [x] 3.2 Combined affected app suites pass — ef93a2a
 
 #### Manual
 
-- [x] 3.3 `reviews/manual-verification.md` exists with full 4-action smoke matrix and outcomes
-- [x] 3.4 No unauthorized data mutation is observable after manual smoke scenarios
+- [x] 3.3 `reviews/manual-verification.md` exists with full 4-action smoke matrix and outcomes — ef93a2a
+- [x] 3.4 No unauthorized data mutation is observable after manual smoke scenarios — ef93a2a

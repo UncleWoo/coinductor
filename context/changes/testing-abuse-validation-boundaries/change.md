@@ -1,7 +1,7 @@
 ---
 change_id: testing-abuse-validation-boundaries
 title: Testing abuse validation boundaries
-status: implementing
+status: implemented
 created: 2026-07-14
 updated: 2026-07-14
 archived_at: null
