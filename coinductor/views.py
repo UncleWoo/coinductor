@@ -67,6 +67,7 @@ def home(request):
                         "dashboard": dashboard,
                         "empty_state": dashboard["empty_state"],
                         "on_track": dashboard["on_track"],
+                        "velocity_status": dashboard["velocity_status"],
                         "budget_form": budget_form,
                         "custom_category_form": custom_category_form,
                         "user_categories": user_categories,
@@ -100,6 +101,7 @@ def home(request):
                     "dashboard": dashboard,
                     "empty_state": dashboard["empty_state"],
                     "on_track": dashboard["on_track"],
+                    "velocity_status": dashboard["velocity_status"],
                     "budget_form": budget_form,
                     "custom_category_form": custom_category_form,
                     "user_categories": user_categories,
@@ -121,8 +123,13 @@ def home(request):
         elif action == "budget-setup":
             budget_form = BudgetSetupForm(user=request.user, data=request.POST)
             if budget_form.is_valid():
-                budget_form.save()
-                return redirect("home")
+                try:
+                    budget_form.save()
+                    return redirect("home")
+                except IntegrityError:
+                    budget_form.add_error(
+                        None, "A budget for this category and month already exists."
+                    )
             else:
                 # Re-render with errors
                 dashboard = get_dashboard_metrics(request.user)
@@ -138,6 +145,7 @@ def home(request):
                         "dashboard": dashboard,
                         "empty_state": dashboard["empty_state"],
                         "on_track": dashboard["on_track"],
+                        "velocity_status": dashboard["velocity_status"],
                         "budget_form": budget_form,
                         "custom_category_form": custom_category_form,
                         "user_categories": user_categories,
@@ -158,6 +166,7 @@ def home(request):
         "dashboard": dashboard,
         "empty_state": dashboard["empty_state"],
         "on_track": dashboard["on_track"],
+        "velocity_status": dashboard["velocity_status"],
         "budget_form": BudgetSetupForm(user=request.user),
         "custom_category_form": CustomCategoryForm(user=request.user),
         "expense_form": ExpenseQuickAddForm(user=request.user),

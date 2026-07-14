@@ -71,8 +71,8 @@ class HomeDashboardViewTests(TestCase):
         self.assertContains(response, "On track")
         self.assertContains(response, "No expenses yet for this month")
         self.assertContains(response, "Spending velocity")
-        # Velocity bar should show "ahead" status (green indicator)
-        self.assertContains(response, "bg-green-500")
+        # Velocity bar should show "ahead" status
+        self.assertEqual(response.context["velocity_status"], "ahead")
         self.assertEqual(response.context["empty_state"], "no_expenses")
 
     def test_dashboard_renders_metrics_state(self):
@@ -97,8 +97,8 @@ class HomeDashboardViewTests(TestCase):
         self.assertContains(response, "Daily limit")
         self.assertContains(response, "Spending velocity")
         self.assertContains(response, "Off track")
-        # Velocity bar should show "behind" status (red indicator)
-        self.assertContains(response, "bg-red-500")
+        # Velocity bar should show "behind" status
+        self.assertEqual(response.context["velocity_status"], "behind")
         self.assertIsNone(response.context["empty_state"])
 
     def test_home_route_name_and_login_redirect_remain_home(self):
@@ -220,9 +220,8 @@ class HomeDashboardViewTests(TestCase):
     def test_budget_setup_post_creates_custom_category(self):
         categories = list(Category.objects.filter(user=self.user, is_deleted=False))
         data = {
-            "action": "budget-setup",
+            "action": "add-category",
             "name": "Pets",
-            "custom_category_amount": "100.00",
         }
         for category in categories:
             data[f"category_{category.id}"] = "0.00"
@@ -232,20 +231,12 @@ class HomeDashboardViewTests(TestCase):
 
         self.assertRedirects(response, reverse("home"))
         pets_category = Category.objects.get(user=self.user, name="Pets", is_deleted=False)
-        self.assertEqual(
-            Budget.objects.get(
-                user=self.user,
-                category=pets_category,
-                month=timezone.localdate().replace(day=1),
-                is_deleted=False,
-            ).amount,
-            Decimal("100.00"),
-        )
+        self.assertIsNotNone(pets_category)
 
     def test_budget_setup_post_rejects_duplicate_custom_category_name(self):
         Category.objects.create(user=self.user, name="Pets")
         categories = list(Category.objects.filter(user=self.user, is_deleted=False))
-        data = {"action": "budget-setup", "name": "Pets", "custom_category_amount": "50.00"}
+        data = {"action": "add-category", "name": "Pets"}
         for i, category in enumerate(categories):
             data[f"category_{category.id}"] = "100.00" if i == 0 else "0.00"
 
@@ -258,7 +249,7 @@ class HomeDashboardViewTests(TestCase):
 
     def test_budget_setup_post_rejects_custom_amount_without_name(self):
         categories = list(Category.objects.filter(user=self.user, is_deleted=False))
-        data = {"action": "budget-setup", "name": "", "custom_category_amount": "80.00"}
+        data = {"action": "add-category", "name": ""}
         for i, category in enumerate(categories):
             data[f"category_{category.id}"] = "100.00" if i == 0 else "0.00"
 
@@ -277,15 +268,14 @@ class HomeDashboardViewTests(TestCase):
         self.assertContains(response, "budget-setup")
         self.assertIn("budget_form", response.context)
         self.assertIn("custom_category_form", response.context)
-        self.assertContains(response, "Add custom category (optional)")
+        self.assertContains(response, "Manage categories")
 
     def test_budget_form_includes_all_user_categories(self):
         self.client.login(username=self.user.username, password=self.password)
         response = self.client.get(reverse("home"))
 
         form = response.context["budget_form"]
-        self.assertEqual(len(form.fields), 8)  # 7 default categories + custom amount
-        self.assertIn("custom_category_amount", form.fields)
+        self.assertEqual(len(form.fields), 7)  # 7 default categories
 
     def test_metrics_state_renders_edit_form(self):
         category = Category.objects.get(user=self.user, name="Food")
@@ -323,7 +313,7 @@ class HomeDashboardViewTests(TestCase):
 
         # Step 1: Create 'Pets' custom category
         categories = list(Category.objects.filter(user=self.user, is_deleted=False))
-        data = {"action": "budget-setup", "name": "Pets", "custom_category_amount": "100.00"}
+        data = {"action": "add-category", "name": "Pets"}
         for cat in categories:
             data[f"category_{cat.id}"] = "0.00"
 
@@ -340,7 +330,7 @@ class HomeDashboardViewTests(TestCase):
 
         # Step 3: Create 'Pets' again (should succeed due to conditional constraint)
         categories = list(Category.objects.filter(user=self.user, is_deleted=False))
-        data = {"action": "budget-setup", "name": "Pets", "custom_category_amount": "50.00"}
+        data = {"action": "add-category", "name": "Pets"}
         for cat in categories:
             data[f"category_{cat.id}"] = "0.00"
 
