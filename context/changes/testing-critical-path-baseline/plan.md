@@ -219,27 +219,27 @@ Finalize Phase-1 completion evidence, preserving a durable manual verification a
 
 #### Manual
 
-- [ ] 1.3 Login to dashboard and trigger at least one form-validation re-render path; confirm dashboard shell still renders expected status area
+- [x] 1.3 Login to dashboard and trigger at least one form-validation re-render path; confirm dashboard shell still renders expected status area — cbb3888
 
 ### Phase 2: Risk-Focused Protection Tests
 
 #### Automated
 
-- [x] 2.1 Service risk tests for dashboard math and pace boundaries pass
-- [x] 2.2 Home dashboard integration tests for state branches and expense flow pass
-- [x] 2.3 Combined app-level regression pass remains green for touched areas
+- [x] 2.1 Service risk tests for dashboard math and pace boundaries pass — 538b5a6
+- [x] 2.2 Home dashboard integration tests for state branches and expense flow pass — 538b5a6
+- [x] 2.3 Combined app-level regression pass remains green for touched areas — 538b5a6
 
 #### Manual
 
-- [ ] 2.4 Validate `no_budget`, `no_expenses`, and metrics states in browser and confirm displayed status aligns with seeded data changes
-- [ ] 2.5 Submit one valid and one invalid expense from dashboard; confirm redirect/error behavior matches expected flow
+- [x] 2.4 Validate `no_budget`, `no_expenses`, and metrics states in browser and confirm displayed status aligns with seeded data changes — 538b5a6
+- [x] 2.5 Submit one valid and one invalid expense from dashboard; confirm redirect/error behavior matches expected flow — 538b5a6
 
 ### Phase 3: Verification Evidence and Rollout Readiness
 
 #### Automated
 
-- [ ] 3.1 Final targeted + aggregate verification commands executed for this phase set
+- [x] 3.1 Final targeted + aggregate verification commands executed for this phase set
 
 #### Manual
 
-- [ ] 3.2 `reviews/manual-verification.md` exists with completed scenario outcomes for risks #1/#2/#5 and no unresolved findings
+- [x] 3.2 `reviews/manual-verification.md` exists with completed scenario outcomes for risks #1/#2/#5 and no unresolved findings
