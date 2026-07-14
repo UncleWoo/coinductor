@@ -201,8 +201,8 @@ Apply only necessary runtime hardening revealed by tests, then capture durable m
 
 #### Automated
 
-- [x] 1.1 Ownership abuse integration tests pass
-- [x] 1.2 Existing ownership validation tests remain green
+- [x] 1.1 Ownership abuse integration tests pass — d717966
+- [x] 1.2 Existing ownership validation tests remain green — d717966
 
 #### Manual
 
@@ -213,8 +213,8 @@ Apply only necessary runtime hardening revealed by tests, then capture durable m
 
 #### Automated
 
-- [ ] 2.1 Validation matrix tests pass in home integration suite
-- [ ] 2.2 Budget and expense form regression tests remain green
+- [x] 2.1 Validation matrix tests pass in home integration suite
+- [x] 2.2 Budget and expense form regression tests remain green
 
 #### Manual
 

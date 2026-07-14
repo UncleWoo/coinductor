@@ -581,6 +581,86 @@ class HomeDashboardViewTests(TestCase):
         self.assertEqual(other_budget.amount, Decimal("500.00"))
         self.assertEqual(Budget.objects.filter(user=self.user, month=month_start).count(), 0)
 
+    def test_add_expense_post_with_invalid_date_shows_inline_errors(self):
+        category = Category.objects.get(user=self.user, name="Food")
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("home"),
+            {
+                "action": "add-expense",
+                "amount": "20.00",
+                "category": category.id,
+                "date": "not-a-date",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("expense_form", response.context)
+        self.assertIn("date", response.context["expense_form"].errors)
+        self.assertEqual(Expense.objects.filter(user=self.user).count(), 0)
+
+    def test_add_expense_post_with_invalid_category_type_shows_inline_errors(self):
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("home"),
+            {
+                "action": "add-expense",
+                "amount": "20.00",
+                "category": "abc",
+                "date": timezone.localdate().isoformat(),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("expense_form", response.context)
+        self.assertIn("category", response.context["expense_form"].errors)
+        self.assertEqual(Expense.objects.filter(user=self.user).count(), 0)
+
+    def test_add_category_post_with_overlong_name_shows_inline_errors(self):
+        self.client.force_login(self.user)
+        overlong_name = "X" * 101
+
+        response = self.client.post(
+            reverse("home"),
+            {"action": "add-category", "name": overlong_name},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("custom_category_form", response.context)
+        self.assertIn("name", response.context["custom_category_form"].errors)
+        self.assertFalse(
+            Category.objects.filter(user=self.user, name=overlong_name, is_deleted=False).exists()
+        )
+
+    def test_delete_category_post_without_category_id_is_noop(self):
+        category = Category.objects.get(user=self.user, name="Food")
+        self.client.force_login(self.user)
+
+        response = self.client.post(reverse("home"), {"action": "delete-category"})
+
+        self.assertRedirects(response, reverse("home"))
+        category.refresh_from_db()
+        self.assertFalse(category.is_deleted)
+
+    def test_budget_setup_post_with_non_decimal_amount_shows_inline_errors(self):
+        category = Category.objects.get(user=self.user, name="Food")
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("home"),
+            {
+                "action": "budget-setup",
+                f"category_{category.id}": "abc",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("budget_form", response.context)
+        self.assertTrue(response.context["budget_form"].errors)
+        self.assertEqual(Budget.objects.filter(user=self.user).count(), 0)
+
     def test_dashboard_shows_quick_add_form_when_budget_exists(self):
         """Dashboard renders quick-add expense form when budget is set."""
         category = Category.objects.get(user=self.user, name="Food")
