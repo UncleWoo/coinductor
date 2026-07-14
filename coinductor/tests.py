@@ -472,6 +472,115 @@ class HomeDashboardViewTests(TestCase):
         self.assertRedirects(response, f"{reverse('login')}?next={reverse('home')}")
         self.assertEqual(Expense.objects.count(), 0)
 
+    def test_anonymous_user_cannot_post_add_category(self):
+        response = self.client.post(
+            reverse("home"),
+            {"action": "add-category", "name": "Pets"},
+        )
+
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('home')}")
+        self.assertFalse(
+            Category.objects.filter(user=self.user, name="Pets", is_deleted=False).exists()
+        )
+
+    def test_anonymous_user_cannot_post_delete_category(self):
+        category = Category.objects.get(user=self.user, name="Food")
+        response = self.client.post(
+            reverse("home"),
+            {"action": "delete-category", "category_id": category.id},
+        )
+
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('home')}")
+        category.refresh_from_db()
+        self.assertFalse(category.is_deleted)
+
+    def test_anonymous_user_cannot_post_budget_setup(self):
+        category = Category.objects.get(user=self.user, name="Food")
+        response = self.client.post(
+            reverse("home"),
+            {"action": "budget-setup", f"category_{category.id}": "100.00"},
+        )
+
+        self.assertRedirects(response, f"{reverse('login')}?next={reverse('home')}")
+        self.assertEqual(Budget.objects.filter(user=self.user).count(), 0)
+
+    def test_cross_user_category_is_rejected_in_add_expense_post(self):
+        other_user = User.objects.create_user(
+            username="cross-user-expense@example.com",
+            password="Pass12345!",
+        )
+        other_category = Category.objects.get(user=other_user, name="Food")
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("home"),
+            {
+                "action": "add-expense",
+                "amount": "10.00",
+                "category": other_category.id,
+                "date": timezone.localdate().isoformat(),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("expense_form", response.context)
+        self.assertIn("category", response.context["expense_form"].errors)
+        self.assertEqual(Expense.objects.filter(user=self.user).count(), 0)
+        self.assertEqual(Expense.objects.filter(user=other_user).count(), 0)
+
+    def test_cross_user_category_cannot_be_soft_deleted(self):
+        other_user = User.objects.create_user(
+            username="cross-user-delete@example.com",
+            password="Pass12345!",
+        )
+        other_category = Category.objects.get(user=other_user, name="Food")
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("home"),
+            {"action": "delete-category", "category_id": other_category.id},
+        )
+
+        self.assertRedirects(response, reverse("home"))
+        other_category.refresh_from_db()
+        self.assertFalse(other_category.is_deleted)
+
+    def test_cross_user_category_is_ignored_in_budget_setup_post(self):
+        other_user = User.objects.create_user(
+            username="cross-user-budget@example.com",
+            password="Pass12345!",
+        )
+        other_category = Category.objects.get(user=other_user, name="Food")
+        month_start = timezone.localdate().replace(day=1)
+        Budget.objects.create(
+            user=other_user,
+            category=other_category,
+            month=month_start,
+            amount=Decimal("500.00"),
+        )
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("home"),
+            {
+                "action": "budget-setup",
+                f"category_{other_category.id}": "999.00",
+            },
+            follow=False,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("budget_form", response.context)
+        self.assertTrue(response.context["budget_form"].errors)
+        other_budget = Budget.objects.get(
+            user=other_user,
+            category=other_category,
+            month=month_start,
+            is_deleted=False,
+        )
+        self.assertEqual(other_budget.amount, Decimal("500.00"))
+        self.assertEqual(Budget.objects.filter(user=self.user, month=month_start).count(), 0)
+
     def test_dashboard_shows_quick_add_form_when_budget_exists(self):
         """Dashboard renders quick-add expense form when budget is set."""
         category = Category.objects.get(user=self.user, name="Food")
