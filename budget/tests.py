@@ -498,6 +498,20 @@ class ExpenseQuickAddFormTests(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn("amount", form.errors)
 
+    def test_form_rejects_negative_amount(self):
+        from budget.forms import ExpenseQuickAddForm
+
+        form = ExpenseQuickAddForm(
+            user=self.user,
+            data={
+                "amount": "-10.00",
+                "category": self.user_category.id,
+                "date": "2026-06-15",
+            },
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("amount", form.errors)
+
     def test_form_requires_category(self):
         from budget.forms import ExpenseQuickAddForm
 

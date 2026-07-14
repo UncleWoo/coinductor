@@ -139,6 +139,7 @@ class ExpenseQuickAddForm(forms.ModelForm):
         
         # Make description optional
         self.fields["description"].required = False
+        self.fields["amount"].min_value = Decimal("0.01")
 
     def save(self, commit=True):
         expense = super().save(commit=False)

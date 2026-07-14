@@ -214,8 +214,8 @@ Finalize Phase-1 completion evidence, preserving a durable manual verification a
 
 #### Automated
 
-- [x] 1.1 Home dashboard test module runs without setup/contract errors
-- [x] 1.2 Dashboard view render branches satisfy required context contract assertions
+- [x] 1.1 Home dashboard test module runs without setup/contract errors — cbb3888
+- [x] 1.2 Dashboard view render branches satisfy required context contract assertions — cbb3888
 
 #### Manual
 
@@ -225,9 +225,9 @@ Finalize Phase-1 completion evidence, preserving a durable manual verification a
 
 #### Automated
 
-- [ ] 2.1 Service risk tests for dashboard math and pace boundaries pass
-- [ ] 2.2 Home dashboard integration tests for state branches and expense flow pass
-- [ ] 2.3 Combined app-level regression pass remains green for touched areas
+- [x] 2.1 Service risk tests for dashboard math and pace boundaries pass
+- [x] 2.2 Home dashboard integration tests for state branches and expense flow pass
+- [x] 2.3 Combined app-level regression pass remains green for touched areas
 
 #### Manual
 

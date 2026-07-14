@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -83,7 +86,11 @@ class Expense(OwnedSoftDeleteModel):
         on_delete=models.CASCADE,
         related_name="expenses",
     )
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal("0.01"))],
+    )
     date = models.DateField()
     description = models.CharField(max_length=255, blank=True)
 

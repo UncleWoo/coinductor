@@ -437,6 +437,26 @@ class HomeDashboardViewTests(TestCase):
         self.assertFalse(response.context["expense_form"].is_valid())
         self.assertIn("amount", response.context["expense_form"].errors)
 
+    def test_expense_quick_add_negative_amount_shows_inline_errors(self):
+        """Negative amount POST is rejected and renders inline errors."""
+        category = Category.objects.get(user=self.user, name="Food")
+
+        self.client.force_login(self.user)
+
+        data = {
+            "action": "add-expense",
+            "amount": "-25.50",
+            "category": category.id,
+            "date": "2026-07-01",
+        }
+        response = self.client.post(reverse("home"), data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("expense_form", response.context)
+        self.assertFalse(response.context["expense_form"].is_valid())
+        self.assertIn("amount", response.context["expense_form"].errors)
+        self.assertEqual(Expense.objects.count(), 0)
+
     def test_anonymous_user_cannot_post_expense(self):
         """Anonymous POST to add-expense redirects to login."""
         category = Category.objects.get(user=self.user, name="Food")
