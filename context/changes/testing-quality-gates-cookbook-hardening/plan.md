@@ -199,24 +199,24 @@ Finalize operational evidence and synchronize rollout state for this cross-cutti
 
 #### Automated
 
-- [x] 1.1 CI workflow for Django test gate exists and is valid
-- [x] 1.2 Local canonical gate command passes (`./.venv/bin/python3 manage.py test`)
+- [x] 1.1 CI workflow for Django test gate exists and is valid — 3cd6921
+- [x] 1.2 Local canonical gate command passes (`./.venv/bin/python3 manage.py test`) — 3cd6921
 
 #### Manual
 
-- [x] 1.3 New workflow run appears as a status check on PR or push
+- [x] 1.3 New workflow run appears as a status check on PR or push — 3cd6921
 
 ### Phase 2: Cookbook Hardening + Deferred Map
 
 #### Automated
 
-- [ ] 2.1 Cookbook sections `6.5` and `6.6` are populated and non-placeholder
-- [ ] 2.2 Canonical local gate remains green after cookbook updates
+- [x] 2.1 Cookbook sections `6.5` and `6.6` are populated and non-placeholder
+- [x] 2.2 Canonical local gate remains green after cookbook updates
 
 #### Manual
 
-- [ ] 2.3 Cookbook runbook is usable without undocumented steps
-- [ ] 2.4 Deferred follow-up map is explicit for lint/typecheck/e2e/visual/hook gates
+- [x] 2.3 Cookbook runbook is usable without undocumented steps
+- [x] 2.4 Deferred follow-up map is explicit for lint/typecheck/e2e/visual/hook gates
 
 ### Phase 3: Verification Evidence + Rollout Sync
 

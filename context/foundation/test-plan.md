@@ -105,11 +105,36 @@ TBD — see §3 Phase 3 for repeated-submit accounting protection pattern.
 
 ### 6.5 Wiring or extending quality gates
 
-TBD — see §3 Phase 4 for durable local/CI gate pattern.
+Current baseline gate (Phase 4) is intentionally minimal and operational:
+
+1. **Local canonical gate**
+   - Command: `./.venv/bin/python3 manage.py test`
+   - Use this as the default pre-commit quality check for behavior safety in this repo.
+
+2. **CI canonical gate**
+   - Workflow: `.github/workflows/test-gate.yml`
+   - Triggers: `pull_request` and `push` to `main`
+   - Runtime: Python `3.13`
+   - Command: `python manage.py test`
+
+3. **How to validate the gate quickly**
+   - Run local command first and confirm green.
+   - Push branch / open PR and verify `test-gate` appears as a status check.
+   - If CI fails but local is green, treat environment drift as first debugging branch (Python/runtime/dependency mismatch).
 
 ### 6.6 Per-rollout-phase notes
 
-TBD — append brief lessons after each phase lands.
+- Phase 1 (`testing-critical-path-baseline`) established integration-first protection for dashboard behavior and expense flow.
+- Phase 2 (`testing-abuse-validation-boundaries`) locked ownership and malformed-input contracts at request boundary.
+- Phase 3 (`testing-duplicate-action-resilience`) added replay/duplicate submit protection and evidence.
+- Phase 4 (`testing-quality-gates-cookbook-hardening`) operationalized the first CI gate and replaced cookbook placeholders for gate operation.
+
+**Deferred follow-up map (explicitly out of this slice):**
+- **lint + typecheck gate** — introduce once tooling choice is locked and baseline cleanup scope is accepted.
+- **critical-flow e2e gate** — add when integration-only signal is no longer sufficient for UX-risk confidence.
+- **post-edit hook standardization** — define when local toolchain contract is unified for the team.
+- **visual deterministic checks** — add only for selected critical screens with known layout-risk signal.
+- **multimodal visual review** — reserve for DOM-unreachable surfaces or confidence gaps deterministic checks cannot close cheaply.
 
 ## 7. What We Deliberately Don't Test
 
