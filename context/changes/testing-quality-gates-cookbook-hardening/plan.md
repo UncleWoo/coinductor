@@ -204,7 +204,7 @@ Finalize operational evidence and synchronize rollout state for this cross-cutti
 
 #### Manual
 
-- [ ] 1.3 New workflow run appears as a status check on PR or push
+- [x] 1.3 New workflow run appears as a status check on PR or push
 
 ### Phase 2: Cookbook Hardening + Deferred Map
 
