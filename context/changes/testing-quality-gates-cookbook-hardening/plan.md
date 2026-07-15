@@ -210,22 +210,22 @@ Finalize operational evidence and synchronize rollout state for this cross-cutti
 
 #### Automated
 
-- [x] 2.1 Cookbook sections `6.5` and `6.6` are populated and non-placeholder
-- [x] 2.2 Canonical local gate remains green after cookbook updates
+- [x] 2.1 Cookbook sections `6.5` and `6.6` are populated and non-placeholder — d995d23
+- [x] 2.2 Canonical local gate remains green after cookbook updates — d995d23
 
 #### Manual
 
-- [x] 2.3 Cookbook runbook is usable without undocumented steps
-- [x] 2.4 Deferred follow-up map is explicit for lint/typecheck/e2e/visual/hook gates
+- [x] 2.3 Cookbook runbook is usable without undocumented steps — d995d23
+- [x] 2.4 Deferred follow-up map is explicit for lint/typecheck/e2e/visual/hook gates — d995d23
 
 ### Phase 3: Verification Evidence + Rollout Sync
 
 #### Automated
 
-- [ ] 3.1 Canonical gate command remains green after final sync
-- [ ] 3.2 Progress and rollout status artifacts are synchronized
+- [x] 3.1 Canonical gate command remains green after final sync
+- [x] 3.2 Progress and rollout status artifacts are synchronized
 
 #### Manual
 
-- [ ] 3.3 `reviews/manual-verification.md` exists with CI and cookbook evidence
-- [ ] 3.4 No unresolved blocker remains for follow-up quality-gate expansion
+- [x] 3.3 `reviews/manual-verification.md` exists with CI and cookbook evidence
+- [x] 3.4 No unresolved blocker remains for follow-up quality-gate expansion

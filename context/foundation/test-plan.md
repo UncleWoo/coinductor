@@ -53,7 +53,7 @@ Each row is a rollout phase with its own change folder. Status values are parser
 | 1 | Critical-path baseline | Bootstrap the test baseline and protect dashboard + expense entry behavior first. | #1, #2, #5 | integration-first (+ minimal unit where cheap) | change opened | context/changes/testing-critical-path-baseline/ |
 | 2 | Abuse + validation boundaries | Lock ownership and untrusted-input protections at request boundaries. | #3, #6 | integration / contract-style request tests | not started | — |
 | 3 | Duplicate-action resilience | Prevent accounting drift from repeated submit/retry behavior. | #4 (and #1 overlap) | integration | not started | — |
-| 4 | Quality-gates + cookbook hardening | Wire required gates and codify repeatable add-test patterns. | cross-cutting | gates + cookbook updates | not started | — |
+| 4 | Quality-gates + cookbook hardening | Wire required gates and codify repeatable add-test patterns. | cross-cutting | gates + cookbook updates | complete | context/changes/testing-quality-gates-cookbook-hardening/ |
 
 ## 4. Stack
 
