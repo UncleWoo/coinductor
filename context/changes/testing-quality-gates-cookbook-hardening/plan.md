@@ -222,10 +222,10 @@ Finalize operational evidence and synchronize rollout state for this cross-cutti
 
 #### Automated
 
-- [x] 3.1 Canonical gate command remains green after final sync
-- [x] 3.2 Progress and rollout status artifacts are synchronized
+- [x] 3.1 Canonical gate command remains green after final sync — 1b4a8b2
+- [x] 3.2 Progress and rollout status artifacts are synchronized — 1b4a8b2
 
 #### Manual
 
-- [x] 3.3 `reviews/manual-verification.md` exists with CI and cookbook evidence
-- [x] 3.4 No unresolved blocker remains for follow-up quality-gate expansion
+- [x] 3.3 `reviews/manual-verification.md` exists with CI and cookbook evidence — 1b4a8b2
+- [x] 3.4 No unresolved blocker remains for follow-up quality-gate expansion — 1b4a8b2
