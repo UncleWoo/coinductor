@@ -206,29 +206,29 @@ Finalize duplicate-resilience protection with evidence artifact and stability ch
 
 #### Manual
 
-- [ ] 1.3 Replay submit does not create a second expense row
-- [ ] 1.4 Intentional second submit from fresh form creates second row
+- [x] 1.3 Replay submit does not create a second expense row
+- [x] 1.4 Intentional second submit from fresh form creates second row
 
 ### Phase 2: Idempotency Token Hardening
 
 #### Automated
 
-- [x] 2.1 Home integration suite passes with token replay protections
-- [x] 2.2 Combined affected suites pass
+- [x] 2.1 Home integration suite passes with token replay protections — 3abd987
+- [x] 2.2 Combined affected suites pass — 3abd987
 
 #### Manual
 
-- [ ] 2.3 Replaying same token is a no-op without duplicate write
-- [ ] 2.4 Fresh-token submit allows intentional second identical expense
+- [x] 2.3 Replaying same token is a no-op without duplicate write
+- [x] 2.4 Fresh-token submit allows intentional second identical expense
 
 ### Phase 3: Regression and Verification Evidence
 
 #### Automated
 
-- [ ] 3.1 Final duplicate-contract integration suite passes
-- [ ] 3.2 Aggregate affected suites stay green
+- [x] 3.1 Final duplicate-contract integration suite passes
+- [x] 3.2 Aggregate affected suites stay green
 
 #### Manual
 
-- [ ] 3.3 `reviews/manual-verification.md` exists with 3-scenario smoke outcomes
-- [ ] 3.4 No accidental duplicate accounting side effects observed in replay scenarios
+- [x] 3.3 `reviews/manual-verification.md` exists with 3-scenario smoke outcomes
+- [x] 3.4 No accidental duplicate accounting side effects observed in replay scenarios
