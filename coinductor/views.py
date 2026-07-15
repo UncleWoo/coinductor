@@ -6,10 +6,58 @@ from django.core.validators import EmailValidator
 from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 
 from budget.forms import BudgetSetupForm, CustomCategoryForm, ExpenseQuickAddForm
 from budget.models import Budget, Category
 from budget.services import get_dashboard_metrics
+
+EXPENSE_IDEMPOTENCY_SESSION_KEY = "expense_idempotency_tokens"
+EXPENSE_IDEMPOTENCY_WINDOW = 20
+
+
+def _issue_expense_idempotency_token(request):
+    token = get_random_string(32)
+    tokens = request.session.get(EXPENSE_IDEMPOTENCY_SESSION_KEY, [])
+    tokens.append(token)
+    request.session[EXPENSE_IDEMPOTENCY_SESSION_KEY] = tokens[-EXPENSE_IDEMPOTENCY_WINDOW:]
+    return token
+
+
+def _consume_expense_idempotency_token(request, token):
+    if not token:
+        return False
+    tokens = request.session.get(EXPENSE_IDEMPOTENCY_SESSION_KEY, [])
+    if token not in tokens:
+        return False
+    tokens.remove(token)
+    request.session[EXPENSE_IDEMPOTENCY_SESSION_KEY] = tokens
+    return True
+
+
+def _render_home(
+    request,
+    dashboard,
+    budget_form,
+    custom_category_form,
+    expense_form,
+    user_categories,
+):
+    return render(
+        request,
+        "home.html",
+        {
+            "dashboard": dashboard,
+            "empty_state": dashboard["empty_state"],
+            "on_track": dashboard["on_track"],
+            "velocity_status": dashboard["velocity_status"],
+            "budget_form": budget_form,
+            "custom_category_form": custom_category_form,
+            "user_categories": user_categories,
+            "expense_form": expense_form,
+            "expense_idempotency_token": _issue_expense_idempotency_token(request),
+        },
+    )
 
 
 def signup(request):
@@ -46,6 +94,10 @@ def home(request):
         action = request.POST.get("action", "")
 
         if action == "add-expense":
+            if not _consume_expense_idempotency_token(
+                request, request.POST.get("idempotency_token")
+            ):
+                return redirect("home")
             expense_form = ExpenseQuickAddForm(
                 user=request.user, data=request.POST
             )
@@ -60,19 +112,13 @@ def home(request):
                 user_categories = Category.objects.filter(
                     user=request.user, is_deleted=False
                 ).order_by("name")
-                return render(
+                return _render_home(
                     request,
-                    "home.html",
-                    {
-                        "dashboard": dashboard,
-                        "empty_state": dashboard["empty_state"],
-                        "on_track": dashboard["on_track"],
-                        "velocity_status": dashboard["velocity_status"],
-                        "budget_form": budget_form,
-                        "custom_category_form": custom_category_form,
-                        "user_categories": user_categories,
-                        "expense_form": expense_form,
-                    },
+                    dashboard,
+                    budget_form,
+                    custom_category_form,
+                    expense_form,
+                    user_categories,
                 )
 
         elif action == "add-category":
@@ -94,19 +140,13 @@ def home(request):
             user_categories = Category.objects.filter(
                 user=request.user, is_deleted=False
             ).order_by("name")
-            return render(
+            return _render_home(
                 request,
-                "home.html",
-                {
-                    "dashboard": dashboard,
-                    "empty_state": dashboard["empty_state"],
-                    "on_track": dashboard["on_track"],
-                    "velocity_status": dashboard["velocity_status"],
-                    "budget_form": budget_form,
-                    "custom_category_form": custom_category_form,
-                    "user_categories": user_categories,
-                    "expense_form": expense_form,
-                },
+                dashboard,
+                budget_form,
+                custom_category_form,
+                expense_form,
+                user_categories,
             )
 
         elif action == "delete-category":
@@ -130,6 +170,20 @@ def home(request):
                     budget_form.add_error(
                         None, "A budget for this category and month already exists."
                     )
+                    dashboard = get_dashboard_metrics(request.user)
+                    custom_category_form = CustomCategoryForm(user=request.user)
+                    expense_form = ExpenseQuickAddForm(user=request.user)
+                    user_categories = Category.objects.filter(
+                        user=request.user, is_deleted=False
+                    ).order_by("name")
+                    return _render_home(
+                        request,
+                        dashboard,
+                        budget_form,
+                        custom_category_form,
+                        expense_form,
+                        user_categories,
+                    )
             else:
                 # Re-render with errors
                 dashboard = get_dashboard_metrics(request.user)
@@ -138,19 +192,13 @@ def home(request):
                 user_categories = Category.objects.filter(
                     user=request.user, is_deleted=False
                 ).order_by("name")
-                return render(
+                return _render_home(
                     request,
-                    "home.html",
-                    {
-                        "dashboard": dashboard,
-                        "empty_state": dashboard["empty_state"],
-                        "on_track": dashboard["on_track"],
-                        "velocity_status": dashboard["velocity_status"],
-                        "budget_form": budget_form,
-                        "custom_category_form": custom_category_form,
-                        "user_categories": user_categories,
-                        "expense_form": expense_form,
-                    },
+                    dashboard,
+                    budget_form,
+                    custom_category_form,
+                    expense_form,
+                    user_categories,
                 )
 
         # Unknown action — redirect to home
@@ -162,19 +210,11 @@ def home(request):
         user=request.user, is_deleted=False
     ).order_by("name")
 
-    context = {
-        "dashboard": dashboard,
-        "empty_state": dashboard["empty_state"],
-        "on_track": dashboard["on_track"],
-        "velocity_status": dashboard["velocity_status"],
-        "budget_form": BudgetSetupForm(user=request.user),
-        "custom_category_form": CustomCategoryForm(user=request.user),
-        "expense_form": ExpenseQuickAddForm(user=request.user),
-        "user_categories": user_categories,
-    }
-
-    return render(
+    return _render_home(
         request,
-        "home.html",
-        context,
+        dashboard,
+        BudgetSetupForm(user=request.user),
+        CustomCategoryForm(user=request.user),
+        ExpenseQuickAddForm(user=request.user),
+        user_categories,
     )

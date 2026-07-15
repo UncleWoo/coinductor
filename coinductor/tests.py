@@ -23,6 +23,10 @@ class HomeDashboardViewTests(TestCase):
 
         self.assertRedirects(response, f"{reverse('login')}?next={reverse('home')}")
 
+    def _get_expense_token(self):
+        response = self.client.get(reverse("home"))
+        return response.context["expense_idempotency_token"]
+
     def test_authenticated_user_receives_dashboard_context(self):
         category = Category.objects.get(user=self.user, name="Food")
         month_start = timezone.localdate().replace(day=1)
@@ -364,6 +368,7 @@ class HomeDashboardViewTests(TestCase):
         
         data = {
             "action": "add-expense",
+            "idempotency_token": self._get_expense_token(),
             "amount": "25.50",
             "category": category.id,
             "date": "2026-07-01",
@@ -398,6 +403,7 @@ class HomeDashboardViewTests(TestCase):
         # Add expense
         data = {
             "action": "add-expense",
+            "idempotency_token": self._get_expense_token(),
             "amount": "50.00",
             "category": category.id,
             "date": timezone.localdate().isoformat(),
@@ -418,6 +424,79 @@ class HomeDashboardViewTests(TestCase):
             Decimal("50.00")
         )
 
+    def test_expense_replay_with_same_token_is_noop_and_preserves_metrics(self):
+        category = Category.objects.get(user=self.user, name="Food")
+        Budget.objects.create(
+            user=self.user,
+            category=category,
+            month=timezone.localdate().replace(day=1),
+            amount=Decimal("400.00"),
+        )
+        self.client.force_login(self.user)
+
+        token = self._get_expense_token()
+        payload = {
+            "action": "add-expense",
+            "idempotency_token": token,
+            "amount": "30.00",
+            "category": category.id,
+            "date": timezone.localdate().isoformat(),
+            "description": "Replay-sensitive",
+        }
+
+        first = self.client.post(reverse("home"), payload, follow=False)
+        replay = self.client.post(reverse("home"), payload, follow=False)
+
+        self.assertRedirects(first, reverse("home"))
+        self.assertRedirects(replay, reverse("home"))
+        self.assertEqual(Expense.objects.filter(user=self.user, category=category).count(), 1)
+
+        dashboard_response = self.client.get(reverse("home"))
+        self.assertEqual(dashboard_response.context["dashboard"]["total_spent"], Decimal("30.00"))
+        self.assertEqual(
+            dashboard_response.context["dashboard"]["remaining_budget"], Decimal("370.00")
+        )
+
+    def test_expense_submit_with_fresh_token_creates_intentional_second_row(self):
+        category = Category.objects.get(user=self.user, name="Food")
+        Budget.objects.create(
+            user=self.user,
+            category=category,
+            month=timezone.localdate().replace(day=1),
+            amount=Decimal("400.00"),
+        )
+        self.client.force_login(self.user)
+
+        first_payload = {
+            "action": "add-expense",
+            "idempotency_token": self._get_expense_token(),
+            "amount": "20.00",
+            "category": category.id,
+            "date": timezone.localdate().isoformat(),
+            "description": "Intentional duplicate 1",
+        }
+        second_payload = {
+            "action": "add-expense",
+            "idempotency_token": self._get_expense_token(),
+            "amount": "20.00",
+            "category": category.id,
+            "date": timezone.localdate().isoformat(),
+            "description": "Intentional duplicate 2",
+        }
+
+        first = self.client.post(reverse("home"), first_payload, follow=False)
+        second = self.client.post(reverse("home"), second_payload, follow=False)
+
+        self.assertRedirects(first, reverse("home"))
+        self.assertRedirects(second, reverse("home"))
+        self.assertEqual(Expense.objects.filter(user=self.user, category=category).count(), 2)
+
+        dashboard_response = self.client.get(reverse("home"))
+        self.assertEqual(dashboard_response.context["dashboard"]["total_spent"], Decimal("40.00"))
+        self.assertEqual(
+            dashboard_response.context["dashboard"]["remaining_budget"], Decimal("360.00")
+        )
+
     def test_expense_quick_add_invalid_post_shows_inline_errors(self):
         """Invalid POST preserves form data and shows errors."""
         category = Category.objects.get(user=self.user, name="Food")
@@ -427,6 +506,7 @@ class HomeDashboardViewTests(TestCase):
         # Submit without required amount
         data = {
             "action": "add-expense",
+            "idempotency_token": self._get_expense_token(),
             "category": category.id,
             "date": "2026-07-01",
         }
@@ -445,6 +525,7 @@ class HomeDashboardViewTests(TestCase):
 
         data = {
             "action": "add-expense",
+            "idempotency_token": self._get_expense_token(),
             "amount": "-25.50",
             "category": category.id,
             "date": "2026-07-01",
@@ -504,6 +585,11 @@ class HomeDashboardViewTests(TestCase):
         self.assertRedirects(response, f"{reverse('login')}?next={reverse('home')}")
         self.assertEqual(Budget.objects.filter(user=self.user).count(), 0)
 
+    def _create_other_user_with_food_category(self, username):
+        other_user = User.objects.create_user(username=username, password=self.password)
+        other_category = Category.objects.get(user=other_user, name="Food")
+        return other_user, other_category
+
     def test_cross_user_category_is_rejected_in_add_expense_post(self):
         other_user = User.objects.create_user(
             username="cross-user-expense@example.com",
@@ -516,6 +602,7 @@ class HomeDashboardViewTests(TestCase):
             reverse("home"),
             {
                 "action": "add-expense",
+                "idempotency_token": self._get_expense_token(),
                 "amount": "10.00",
                 "category": other_category.id,
                 "date": timezone.localdate().isoformat(),
@@ -581,6 +668,34 @@ class HomeDashboardViewTests(TestCase):
         self.assertEqual(other_budget.amount, Decimal("500.00"))
         self.assertEqual(Budget.objects.filter(user=self.user, month=month_start).count(), 0)
 
+    def test_add_category_post_does_not_mutate_other_users_data(self):
+        other_user = User.objects.create_user(
+            username="cross-user-add-category@example.com",
+            password="Pass12345!",
+        )
+        other_category_ids = set(
+            Category.objects.filter(user=other_user, is_deleted=False).values_list("id", flat=True)
+        )
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("home"),
+            {
+                "action": "add-category",
+                "name": "Travel",
+                "category_id": Category.objects.get(user=other_user, name="Food").id,
+            },
+        )
+
+        self.assertRedirects(response, reverse("home"))
+        self.assertTrue(
+            Category.objects.filter(user=self.user, name="Travel", is_deleted=False).exists()
+        )
+        self.assertSetEqual(
+            set(Category.objects.filter(user=other_user, is_deleted=False).values_list("id", flat=True)),
+            other_category_ids,
+        )
+
     def test_add_expense_post_with_invalid_date_shows_inline_errors(self):
         category = Category.objects.get(user=self.user, name="Food")
         self.client.force_login(self.user)
@@ -589,6 +704,7 @@ class HomeDashboardViewTests(TestCase):
             reverse("home"),
             {
                 "action": "add-expense",
+                "idempotency_token": self._get_expense_token(),
                 "amount": "20.00",
                 "category": category.id,
                 "date": "not-a-date",
@@ -607,6 +723,7 @@ class HomeDashboardViewTests(TestCase):
             reverse("home"),
             {
                 "action": "add-expense",
+                "idempotency_token": self._get_expense_token(),
                 "amount": "20.00",
                 "category": "abc",
                 "date": timezone.localdate().isoformat(),

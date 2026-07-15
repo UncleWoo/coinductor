@@ -7,6 +7,7 @@
   <form method="post" class="mt-6">
     {% csrf_token %}
     <input type="hidden" name="action" value="add-expense">
+    <input type="hidden" name="idempotency_token" value="{{ expense_idempotency_token }}">
 
     {% if expense_form.non_field_errors %}
       <div class="rounded-brand border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
