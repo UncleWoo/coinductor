@@ -201,8 +201,8 @@ Finalize duplicate-resilience protection with evidence artifact and stability ch
 
 #### Automated
 
-- [x] 1.1 Duplicate-contract integration tests pass
-- [x] 1.2 Existing metrics service tests remain green
+- [x] 1.1 Duplicate-contract integration tests pass — 1f7af71
+- [x] 1.2 Existing metrics service tests remain green — 1f7af71
 
 #### Manual
 
@@ -213,8 +213,8 @@ Finalize duplicate-resilience protection with evidence artifact and stability ch
 
 #### Automated
 
-- [ ] 2.1 Home integration suite passes with token replay protections
-- [ ] 2.2 Combined affected suites pass
+- [x] 2.1 Home integration suite passes with token replay protections
+- [x] 2.2 Combined affected suites pass
 
 #### Manual
 
