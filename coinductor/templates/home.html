@@ -103,7 +103,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="action" value="delete-category">
                     <input type="hidden" name="category_id" value="{{ category.id }}">
-                    <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">
+                    <button type="submit" onclick="return confirm('Remove this category?');" class="text-sm font-medium text-red-600 hover:text-red-800">
                       Remove
                     </button>
                   </form>
@@ -167,7 +167,7 @@
         {% endif %}
       </section>
 
-      <section class="rounded-brand border border-gray-200 bg-gray-50 p-6 shadow-sm">
+      <section class="ui-card">
         <h2 class="text-lg font-semibold text-brand-charcoal">Edit monthly budget</h2>
         <p class="mt-2 text-sm text-gray-700">
           Adjust your category budgets for this month.
@@ -245,7 +245,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="action" value="delete-category">
                     <input type="hidden" name="category_id" value="{{ category.id }}">
-                    <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-800">
+                    <button type="submit" onclick="return confirm('Remove this category?');" class="text-sm font-medium text-red-600 hover:text-red-800">
                       Remove
                     </button>
                   </form>

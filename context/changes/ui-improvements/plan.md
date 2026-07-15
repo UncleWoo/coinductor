@@ -94,6 +94,14 @@ Reduce duplication by introducing reusable template partials and standardized se
 
 **Contract**: Partial supports variant input (success/warn/danger/neutral) mapped to semantic classes.
 
+**Addendum (implemented during Phase 2)**:
+
+**File**: `coinductor/templates/partials/expense_form.html` (new)
+
+**Intent**: Extract repeated expense form markup that appears in multiple dashboard states.
+
+**Contract**: Self-contained form partial accepts `description` context variable for contextual help text. Used in home.html for both no_budget and normal states to reduce duplication.
+
 #### 2. Base-level shared controls
 
 **File**: `coinductor/templates/base.html`

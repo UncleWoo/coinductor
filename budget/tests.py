@@ -266,6 +266,30 @@ class DashboardMetricsServiceTests(TestCase):
         above_boundary = get_dashboard_metrics(self.user, as_of=self.as_of)
         self.assertEqual(above_boundary["velocity_status"], "behind")
 
+    def test_metrics_state_transition_after_first_expense(self):
+        Budget.objects.create(
+            user=self.user,
+            category=self.user_category,
+            month=date(2026, 6, 1),
+            amount=Decimal("300.00"),
+        )
+
+        no_expenses = get_dashboard_metrics(self.user, as_of=self.as_of)
+        self.assertEqual(no_expenses["empty_state"], "no_expenses")
+        self.assertEqual(no_expenses["velocity_status"], "ahead")
+
+        Expense.objects.create(
+            user=self.user,
+            category=self.user_category,
+            amount=Decimal("30.00"),
+            date=date(2026, 6, 10),
+        )
+
+        after_first_expense = get_dashboard_metrics(self.user, as_of=self.as_of)
+        self.assertIsNone(after_first_expense["empty_state"])
+        self.assertEqual(after_first_expense["velocity_status"], "ahead")
+        self.assertTrue(after_first_expense["on_track"])
+
 
 class BudgetSetupFormTests(TestCase):
     def setUp(self):

@@ -65,6 +65,11 @@
     @apply inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-800;
   }
 
+  /* Message/Alert */
+  .message {
+    @apply rounded-brand border border-brand-accent bg-yellow-50 px-4 py-3 text-brand-charcoal shadow-sm;
+  }
+
   /* Form Controls */
   .form-input {
     @apply block w-full rounded-brand border border-gray-300 bg-white px-3 py-2 text-sm text-brand-charcoal placeholder-gray-400 focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2;

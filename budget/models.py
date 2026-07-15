@@ -95,6 +95,12 @@ class Expense(OwnedSoftDeleteModel):
     description = models.CharField(max_length=255, blank=True)
 
     class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(amount__gte=Decimal("0.01")),
+                name="expense_amount_gte_0_01",
+            )
+        ]
         ordering = ["-date", "-created_at"]
 
     def clean(self):
@@ -106,3 +112,21 @@ class Expense(OwnedSoftDeleteModel):
 
     def __str__(self):
         return f"{self.category} - {self.amount} on {self.date}"
+
+
+class ExpenseIdempotencyToken(models.Model):
+    user = models.ForeignKey(
+        "auth.User",
+        on_delete=models.CASCADE,
+        related_name="expense_idempotency_tokens",
+    )
+    token = models.CharField(max_length=64)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "token"],
+                name="expense_idempotency_unique_user_token",
+            )
+        ]

@@ -517,6 +517,28 @@ class HomeDashboardViewTests(TestCase):
         self.assertFalse(response.context["expense_form"].is_valid())
         self.assertIn("amount", response.context["expense_form"].errors)
 
+    def test_expense_quick_add_missing_token_shows_form_error(self):
+        category = Category.objects.get(user=self.user, name="Food")
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("home"),
+            {
+                "action": "add-expense",
+                "amount": "20.00",
+                "category": category.id,
+                "date": timezone.localdate().isoformat(),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("expense_form", response.context)
+        self.assertIn(
+            "This form expired. Refresh and try again.",
+            response.context["expense_form"].non_field_errors(),
+        )
+        self.assertEqual(Expense.objects.filter(user=self.user).count(), 0)
+
     def test_expense_quick_add_negative_amount_shows_inline_errors(self):
         """Negative amount POST is rejected and renders inline errors."""
         category = Category.objects.get(user=self.user, name="Food")

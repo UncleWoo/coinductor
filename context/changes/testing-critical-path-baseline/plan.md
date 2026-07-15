@@ -79,6 +79,13 @@ Stabilize the existing dashboard test harness and view-context contract so Phase
 
 **Implementation Note**: After completing this phase and all automated verification passes, pause here for manual confirmation from the human that the manual testing was successful before proceeding to the next phase.
 
+### Phase 2 Addendum (manual-test-discovered blocker)
+
+During Phase 2 manual verification, we identified that negative expense amounts could be submitted through quick-add flow. To close this blocker, scope was expanded to include:
+- `budget/forms.py` quick-add amount minimum validation
+- `budget/models.py` `Expense.amount` positivity validator
+- `budget/migrations/0005_alter_expense_amount.py` schema migration reflecting validator change
+
 ---
 
 ## Phase 2: Risk-Focused Protection Tests

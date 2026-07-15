@@ -9,30 +9,21 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 
 from budget.forms import BudgetSetupForm, CustomCategoryForm, ExpenseQuickAddForm
-from budget.models import Budget, Category
+from budget.models import Budget, Category, ExpenseIdempotencyToken
 from budget.services import get_dashboard_metrics
 
-EXPENSE_IDEMPOTENCY_SESSION_KEY = "expense_idempotency_tokens"
-EXPENSE_IDEMPOTENCY_WINDOW = 20
-
-
 def _issue_expense_idempotency_token(request):
-    token = get_random_string(32)
-    tokens = request.session.get(EXPENSE_IDEMPOTENCY_SESSION_KEY, [])
-    tokens.append(token)
-    request.session[EXPENSE_IDEMPOTENCY_SESSION_KEY] = tokens[-EXPENSE_IDEMPOTENCY_WINDOW:]
-    return token
+    return get_random_string(32)
 
 
-def _consume_expense_idempotency_token(request, token):
+def _consume_expense_idempotency_token(user, token):
     if not token:
         return False
-    tokens = request.session.get(EXPENSE_IDEMPOTENCY_SESSION_KEY, [])
-    if token not in tokens:
-        return False
-    tokens.remove(token)
-    request.session[EXPENSE_IDEMPOTENCY_SESSION_KEY] = tokens
-    return True
+    _, created = ExpenseIdempotencyToken.objects.get_or_create(
+        user=user,
+        token=token,
+    )
+    return created
 
 
 def _render_home(
@@ -94,13 +85,31 @@ def home(request):
         action = request.POST.get("action", "")
 
         if action == "add-expense":
-            if not _consume_expense_idempotency_token(
-                request, request.POST.get("idempotency_token")
-            ):
-                return redirect("home")
+            token = request.POST.get("idempotency_token")
             expense_form = ExpenseQuickAddForm(
                 user=request.user, data=request.POST
             )
+            if not token:
+                expense_form.add_error(
+                    None,
+                    "This form expired. Refresh and try again.",
+                )
+                dashboard = get_dashboard_metrics(request.user)
+                budget_form = BudgetSetupForm(user=request.user)
+                custom_category_form = CustomCategoryForm(user=request.user)
+                user_categories = Category.objects.filter(
+                    user=request.user, is_deleted=False
+                ).order_by("name")
+                return _render_home(
+                    request,
+                    dashboard,
+                    budget_form,
+                    custom_category_form,
+                    expense_form,
+                    user_categories,
+                )
+            if not _consume_expense_idempotency_token(request.user, token):
+                return redirect("home")
             if expense_form.is_valid():
                 expense_form.save()
                 return redirect("home")

@@ -18,18 +18,17 @@ class BudgetSetupForm(forms.Form):
 
         # Build fields for each user category (predefined + any custom)
         user_categories = Category.objects.filter(user=user, is_deleted=False).order_by("name")
-        for category in user_categories:
-            field_name = f"category_{category.id}"
-            initial_amount = Decimal("0.00")
-
-            existing_budget = Budget.objects.filter(
+        existing_budgets = {
+            budget.category_id: budget.amount
+            for budget in Budget.objects.filter(
                 user=user,
-                category=category,
                 month=month_start,
                 is_deleted=False,
-            ).first()
-            if existing_budget:
-                initial_amount = existing_budget.amount
+            ).only("category_id", "amount")
+        }
+        for category in user_categories:
+            field_name = f"category_{category.id}"
+            initial_amount = existing_budgets.get(category.id, Decimal("0.00"))
 
             self.fields[field_name] = forms.DecimalField(
                 label=category.name,

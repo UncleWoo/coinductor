@@ -1,9 +1,9 @@
 ---
-change_id: testing-abuse-validation-boundaries
-title: Testing abuse validation boundaries
-status: impl_reviewed
+change_id: testing-quality-gates-cookbook-hardening
+title: Testing quality gates cookbook hardening
+status: implementing
 created: 2026-07-14
-updated: 2026-07-14
+updated: 2026-07-15
 archived_at: null
 ---
 
