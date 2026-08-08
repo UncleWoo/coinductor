@@ -1,0 +1,26 @@
+pre-commit:
+  parallel: true
+  jobs:
+    - name: ruff-lint
+      glob: "*.py"
+      run: .venv/bin/ruff check --fix {staged_files}
+      tags:
+        - python
+        - lint
+
+    - name: ruff-format
+      glob: "*.py"
+      run: .venv/bin/ruff format {staged_files}
+      tags:
+        - python
+        - format
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: mypy-typecheck
+      glob: "*.py"
+      run: .venv/bin/mypy {staged_files} --ignore-missing-imports
+      tags:
+        - python
+        - typecheck

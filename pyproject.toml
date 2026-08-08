@@ -1,0 +1,54 @@
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    "migrations",
+    "node_modules",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # Pyflakes
+    "I",     # isort
+    "C4",    # flake8-comprehensions
+    "UP",    # pyupgrade
+]
+ignore = [
+    "E501",  # Line too long (handled by formatter)
+    "E701",  # Multiple statements on one line
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["coinductor", "budget"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.13"
+check_untyped_defs = false
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = [
+    "^.venv/",
+    "^migrations/",
+]
+
+[[tool.mypy.overrides]]
+module = "django.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
