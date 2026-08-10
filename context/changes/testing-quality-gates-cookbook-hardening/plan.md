@@ -199,8 +199,8 @@ Finalize operational evidence and synchronize rollout state for this cross-cutti
 
 #### Automated
 
-- [x] 1.1 CI workflow for Django test gate exists and is valid — 3cd6921
-- [x] 1.2 Local canonical gate command passes (`./.venv/bin/python3 manage.py test`) — 3cd6921
+- [x] 1.1 CI workflow for Django test gate exists and is valid — fa2dba8
+- [x] 1.2 Local canonical gate command passes (`./.venv/bin/python3 manage.py test`) — fa2dba8
 
 #### Manual
 

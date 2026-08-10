@@ -14,9 +14,7 @@ User = get_user_model()
 
 class OwnershipValidationTests(TestCase):
     def setUp(self):
-        self.owner = User.objects.create_user(
-            username="owner@example.com", password="Pass12345!"
-        )
+        self.owner = User.objects.create_user(username="owner@example.com", password="Pass12345!")
         self.other_user = User.objects.create_user(
             username="other@example.com", password="Pass12345!"
         )
@@ -48,18 +46,14 @@ class OwnershipValidationTests(TestCase):
 
 class DefaultCategorySeedingTests(TestCase):
     def test_user_creation_seeds_default_categories_once(self):
-        user = User.objects.create_user(
-            username="seeded@example.com", password="Pass12345!"
-        )
+        user = User.objects.create_user(username="seeded@example.com", password="Pass12345!")
 
         categories = Category.objects.filter(user=user).values_list("name", flat=True)
         self.assertEqual(set(categories), set(DEFAULT_CATEGORIES))
         self.assertEqual(Category.objects.filter(user=user).count(), len(DEFAULT_CATEGORIES))
 
     def test_existing_user_update_does_not_duplicate_categories(self):
-        user = User.objects.create_user(
-            username="existing@example.com", password="Pass12345!"
-        )
+        user = User.objects.create_user(username="existing@example.com", password="Pass12345!")
         initial_count = Category.objects.filter(user=user).count()
 
         user.first_name = "Updated"
@@ -80,7 +74,7 @@ class DefaultCategorySeedingTests(TestCase):
         from django.contrib.auth.models import User as DjangoUser
 
         # Mock bulk_create to raise an exception
-        with patch('budget.models.Category.objects.bulk_create') as mock_bulk_create:
+        with patch("budget.models.Category.objects.bulk_create") as mock_bulk_create:
             mock_bulk_create.side_effect = Exception("Database error")
 
             # User creation should still succeed despite signal failure
@@ -102,9 +96,7 @@ class DashboardMetricsServiceTests(TestCase):
             username="other-service-user@example.com", password="Pass12345!"
         )
         self.user_category = Category.objects.create(user=self.user, name="Owner Category")
-        self.other_category = Category.objects.create(
-            user=self.other_user, name="Other Category"
-        )
+        self.other_category = Category.objects.create(user=self.other_user, name="Other Category")
         self.as_of = date(2026, 6, 10)
 
     def test_returns_no_budget_empty_state_when_month_has_no_budget(self):
@@ -318,9 +310,7 @@ class DashboardMetricsServiceTests(TestCase):
 
 class BudgetSetupFormTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            username="setup@example.com", password="Pass12345!"
-        )
+        self.user = User.objects.create_user(username="setup@example.com", password="Pass12345!")
         # Create default categories for user
         Category.objects.filter(user=self.user).delete()
         for cat_name in DEFAULT_CATEGORIES:
@@ -429,9 +419,7 @@ class BudgetSetupFormTests(TestCase):
 
 class CustomCategoryFormTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
-            username="custom@example.com", password="Pass12345!"
-        )
+        self.user = User.objects.create_user(username="custom@example.com", password="Pass12345!")
         self.other_user = User.objects.create_user(
             username="other_custom@example.com", password="Pass12345!"
         )
@@ -490,9 +478,7 @@ class ExpenseQuickAddFormTests(TestCase):
         )
         # Use existing default categories instead of creating duplicates
         self.user_category = Category.objects.get(user=self.user, name="Food")
-        self.other_category = Category.objects.get(
-            user=self.other_user, name="Transport"
-        )
+        self.other_category = Category.objects.get(user=self.other_user, name="Transport")
 
     def test_form_creates_valid_expense(self):
         from budget.forms import ExpenseQuickAddForm
@@ -623,12 +609,8 @@ class AuthorizationBoundaryTests(TestCase):
 
     def setUp(self):
         """Create two independent users with their own budget data."""
-        self.user_a = User.objects.create_user(
-            username="user_a@example.com", password="pass123456"
-        )
-        self.user_b = User.objects.create_user(
-            username="user_b@example.com", password="pass123456"
-        )
+        self.user_a = User.objects.create_user(username="user_a@example.com", password="pass123456")
+        self.user_b = User.objects.create_user(username="user_b@example.com", password="pass123456")
 
         # User A has their own category, budget, and expense
         self.category_a = Category.objects.get(user=self.user_a, name="Food")
@@ -699,12 +681,12 @@ class AuthorizationBoundaryTests(TestCase):
 
     def test_category_queryset_scoped_by_user(self):
         """Category querysets for one user should not include another user's categories."""
-        user_a_cats = Category.objects.filter(
-            user=self.user_a, is_deleted=False
-        ).values_list("id", flat=True)
-        user_b_cats = Category.objects.filter(
-            user=self.user_b, is_deleted=False
-        ).values_list("id", flat=True)
+        user_a_cats = Category.objects.filter(user=self.user_a, is_deleted=False).values_list(
+            "id", flat=True
+        )
+        user_b_cats = Category.objects.filter(user=self.user_b, is_deleted=False).values_list(
+            "id", flat=True
+        )
 
         self.assertIn(self.category_a.id, user_a_cats)
         self.assertNotIn(self.category_a.id, user_b_cats)
@@ -729,15 +711,11 @@ class AuthorizationBoundaryTests(TestCase):
     def test_budget_query_filtered_by_user_owner(self):
         """Budgets created by User A are not visible in User B's queries."""
         # User A's budgets in June
-        user_a_budgets_june = Budget.objects.filter(
-            user=self.user_a, month=date(2026, 6, 1)
-        )
+        user_a_budgets_june = Budget.objects.filter(user=self.user_a, month=date(2026, 6, 1))
         self.assertEqual(user_a_budgets_june.count(), 1)
 
         # User B has no budgets in June
-        user_b_budgets_june = Budget.objects.filter(
-            user=self.user_b, month=date(2026, 6, 1)
-        )
+        user_b_budgets_june = Budget.objects.filter(user=self.user_b, month=date(2026, 6, 1))
         self.assertEqual(user_b_budgets_june.count(), 0)
 
         # User B cannot access User A's budget by direct id

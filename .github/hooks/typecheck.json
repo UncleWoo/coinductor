@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "edit|write|multiedit",
+        "hooks": [
+          {
+            "type": "command",
+            "bash": "mypy .",
+            "cwd": ".",
+            "timeoutSec": 120
+          }
+        ]
+      }
+    ]
+  }
+}
