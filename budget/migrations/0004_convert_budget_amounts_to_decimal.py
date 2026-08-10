@@ -11,8 +11,9 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-            # Convert existing integer amounts to proper decimal format
-            "UPDATE budget_budget SET amount = printf('%.2f', amount) WHERE amount IS NOT NULL;",
+            # Convert existing amounts to proper decimal format
+            # PostgreSQL: use CAST to numeric. SQLite: printf already handled by default decimal storage
+            "UPDATE budget_budget SET amount = CAST(amount AS numeric(10,2)) WHERE amount IS NOT NULL;",
             reverse_sql=migrations.RunSQL.noop,
         ),
     ]
