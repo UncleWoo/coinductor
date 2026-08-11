@@ -3,7 +3,7 @@ project: Coinductor
 version: 1
 status: draft
 created: 2026-06-18
-updated: 2026-06-18
+updated: 2026-08-11
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -27,12 +27,12 @@ Users don't stick to budgets because they lack daily feedback — they discover 
 
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 |---|---|---|---|---|---|
-| F-01 | minimal-auth-scaffold | (foundation) Django built-in auth configured; users can sign up and log in | — | FR-001, FR-002 | proposed |
-| F-02 | domain-models-migrations | (foundation) Budget, Expense models defined with ORM relationships; migrations applied | — | FR-003, FR-004 | proposed |
-| S-01 | dashboard-on-track-daily-limit | see dashboard with on-track yes/no, remaining budget, days left, daily limit | F-01, F-02 | US-01, FR-005, FR-006, FR-007 | proposed |
-| S-02 | add-expense-three-taps | add expense (amount, category, date) from dashboard; limit recalculates instantly | S-01 | FR-004, NFR ≤3 taps | proposed |
-| S-03 | define-monthly-budget-categories | define monthly budget per category (e.g., food: 2000, transport: 500) | F-02 | FR-003 | proposed |
-| S-04 | ui-improvements | use a more original visual style (tokens, components, layout polish) to distinguish Coinductor from default Tailwind templates | F-01, F-02, S-01 | FR-007, NFR responsive web | proposed |
+| F-01 | minimal-auth-scaffold | (foundation) Django built-in auth configured; users can sign up and log in | — | FR-001, FR-002 | **done** |
+| F-02 | domain-models-migrations | (foundation) Budget, Expense models defined with ORM relationships; migrations applied | — | FR-003, FR-004 | **done** |
+| S-01 | dashboard-on-track-daily-limit | see dashboard with on-track yes/no, remaining budget, days left, daily limit | F-01, F-02 | US-01, FR-005, FR-006, FR-007 | **done** |
+| S-02 | add-expense-three-taps | add expense (amount, category, date) from dashboard; limit recalculates instantly | S-01 | FR-004, NFR ≤3 taps | **done** |
+| S-03 | define-monthly-budget-categories | define monthly budget per category (e.g., food: 2000, transport: 500) | F-02 | FR-003 | **done** |
+| S-04 | ui-improvements | use a more original visual style (tokens, components, layout polish) to distinguish Coinductor from default Tailwind templates | F-01, F-02, S-01 | FR-007, NFR responsive web | **done** |
 
 ## Streams
 
@@ -69,7 +69,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sequenced first because S-01 (north star) cannot exist without user context. Django's django.contrib.auth handles this out-of-the-box — no custom token logic needed for MVP. If this scaffold proves insufficient (e.g., session handling on Railway), it adds replanning cost, but the baseline shows Django auth middleware is already configured, reducing that risk.
-- **Status:** proposed
+- **Status:** done
 
 ### F-02: Domain models + migrations
 
@@ -82,7 +82,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** This is the "invest deeply in data" decision from Step 5. Rebalancing logic (FR-006: remaining_money / remaining_days) requires correct Budget/Expense schema from the start. If the schema is wrong (e.g., missing a category-to-budget relationship, or Expense.date not indexed), S-01 becomes unplannable. Sequenced as foundation so all vertical slices share the same domain model — no schema drift.
-- **Status:** proposed
+- **Status:** done
 
 ## Slices
 
@@ -96,7 +96,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** This is the north star — if the "X zł dziennie" mental model doesn't resonate with users, the product fails. Sequenced as early as Prerequisites allow (after F-01 + F-02) because everything else (S-02 expense entry, S-03 budget setup) only matters if this core flow works. The calculation (remaining / days_left) is simple, but "remaining" spans all categories — if the query is slow or the UX is unclear, users abandon. PRD §Success Criteria guardrail: "≤3 taps from main screen" implies the dashboard IS the main screen, so this slice must also handle the empty state ("no expenses yet" guidance per US-01 AC).
-- **Status:** proposed
+- **Status:** done
 
 ### S-02: User can add an expense (≤3 taps)
 
@@ -109,7 +109,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - How should the "≤3 taps" UX look on mobile web? (e.g., inline form vs modal vs quick-add bar) — Owner: designer or solo dev. Block: no (can be prototyped in `/10x-plan`).
 - **Risk:** The ≤3 taps guardrail is load-bearing per PRD §Success Criteria — if entry is tedious, users abandon. Sequenced after S-01 (not parallel) because the rebalancing feedback loop (updated daily limit) is what makes expense entry meaningful. If S-01's UX is broken, fixing S-02's form won't save the product. The "recalculates instantly" AC means the view must re-query or the business logic must return the new limit on POST — if that's slow, the feedback loop breaks.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: User can define monthly budget categories
 
@@ -122,7 +122,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Should categories be predefined (fixed list) or user-defined (custom strings)? — Owner: product. Block: no (PRD FR-003 Socrates note says "predefined categories are simpler", so default to fixed list; can be loosened in `/10x-plan`).
 - **Risk:** Sequenced in parallel with S-02 because both are inputs to S-01's calculation but neither blocks the other. If budget setup is tedious (many fields, no sensible defaults), users never reach S-01. PRD §Non-Goals says "No advanced settings / customization — sensible defaults only", so this slice must provide a fast onboarding (e.g., common categories pre-filled with zero amounts, user edits only what they need).
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: UI improvements (original visual identity)
 
@@ -135,18 +135,18 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - How far to go in v1 (token/theme pass only vs. broader component/layout redesign) — Owner: product/design. Block: no (scope can be fixed in `/10x-plan`).
 - **Risk:** Visual work can easily expand beyond MVP scope; constrain to high-impact UI surfaces (dashboard + auth + expense entry path) and keep interaction complexity flat to avoid hurting the ≤3 taps guardrail.
-- **Status:** proposed
+- **Status:** done
 
 ## Backlog Handoff
 
 | Roadmap ID | Change ID | Suggested issue title | Ready for `/10x-plan` | Notes |
 |---|---|---|---|---|
-| F-01 | minimal-auth-scaffold | Minimal auth scaffold: Django signup + login | yes | Run `/10x-plan minimal-auth-scaffold` |
-| F-02 | domain-models-migrations | Domain models + migrations: Budget, Expense schema | yes | Run `/10x-plan domain-models-migrations` |
-| S-01 | dashboard-on-track-daily-limit | Dashboard: on-track status + daily limit (US-01) | no | Blocked by F-01, F-02 |
-| S-02 | add-expense-three-taps | Add expense in ≤3 taps with instant recalc | no | Blocked by S-01 |
-| S-03 | define-monthly-budget-categories | Define monthly budget per category | no | Blocked by F-02 |
-| S-04 | ui-improvements | UI improvements: distinctive visual identity and dashboard polish | no | Blocked by F-01, F-02, S-01 |
+| F-01 | minimal-auth-scaffold | Minimal auth scaffold: Django signup + login | yes | ✅ **Completed** — Run `/10x-plan minimal-auth-scaffold` |
+| F-02 | domain-models-migrations | Domain models + migrations: Budget, Expense schema | yes | ✅ **Completed** — Run `/10x-plan domain-models-migrations` |
+| S-01 | dashboard-on-track-daily-limit | Dashboard: on-track status + daily limit (US-01) | yes | ✅ **Completed** — Was blocked by F-01, F-02 |
+| S-02 | add-expense-three-taps | Add expense in ≤3 taps with instant recalc | yes | ✅ **Completed** — Was blocked by S-01 |
+| S-03 | define-monthly-budget-categories | Define monthly budget per category | yes | ✅ **Completed** — Was blocked by F-02 |
+| S-04 | ui-improvements | UI improvements: distinctive visual identity and dashboard polish | yes | ✅ **Completed** — Was blocked by F-01, F-02, S-01 |
 
 ## Open Roadmap Questions
 
@@ -164,4 +164,19 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Done
 
-(Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches the item is archived.)
+**MVP Complete — 2026-08-11**
+
+| Item | Change ID | Delivered | Notes |
+|---|---|---|---|
+| F-01 | minimal-auth-scaffold | User signup + login with email/password | Django auth with email validation, default categories seeded per user |
+| F-02 | domain-models-migrations | Category, Budget, Expense models with migrations | PostgreSQL-compatible decimal handling, soft-delete pattern, ownership constraints |
+| S-01 | dashboard-on-track-daily-limit | Dashboard shows on-track status + daily limit | Velocity tracking (ahead/on_pace/behind), empty states handled, metrics isolated per user |
+| S-02 | add-expense-three-taps | Quick-add expense form | Form scoped to user categories, idempotency tokens prevent duplicates, recalc instant |
+| S-03 | define-monthly-budget-categories | Budget setup form with custom categories | 7 default categories, add/delete custom, upsert logic, form validation per user |
+| S-04 | ui-improvements | Tailwind-based responsive dashboard | Navbar with logout, clean dashboard layout, mobile-friendly ≤3 taps flow |
+
+**Authorization & Quality:**
+- 83 integration + unit tests, all passing
+- Risk 3 (cross-user data isolation) protected with 6 authorization boundary tests
+- Signal error handling: graceful degradation on category seeding failure
+- All issues #1-#5 closed as complete
